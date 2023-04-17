@@ -82,6 +82,8 @@ export default function TestPage(){
     //     )
     // );
 
+    // TODO: SHOULD DEFINITELY NOT BE JUST DOING DATE(ENTRY['TIME']) LATER ON BECAUSE IT CONVERTS TO THE DAY ON WHICH YOU ACCESS
+
     const data = useMemo(
         () => (
             [
@@ -91,12 +93,12 @@ export default function TestPage(){
                         {date: entry['time'], temp: entry['temp']}
                     ))
                 },
-                {
-                    label: "Humidity",
-                    data: weather_data.map((entry) => (
-                        {date: entry['time'], temp: entry['humidity']}
-                    ))
-                }
+                // {
+                //     label: "Humidity",
+                //     data: weather_data.map((entry) => (
+                //         {date: entry['time'], humidity: entry['humidity']}
+                //     ))
+                // }
             ]
         ),
         [weather_data]
@@ -106,6 +108,7 @@ export default function TestPage(){
     const primaryAxis = useMemo(
         () => (
             {
+                type: 'linear',
                 getValue: (datum) => datum.date
             }
         ),
@@ -116,26 +119,28 @@ export default function TestPage(){
         () => [
             {
                 getValue: (datum) => datum.temp,
-                elementType: 'line'
+                elementType: 'line',
+                range: [0, 200]
             },
-            {
-                getValue: (datum) => datum.humidity,
-                elementType: 'line'
-            },
+            // {
+            //     getValue: (datum) => datum.humidity,
+            //     elementType: 'bar',
+            //     range: [0, 100]
+            // }
         ],
         []
     );
     
 
     return(
-        <>
+        <div>
             <h1>test chart page title</h1>
             <button onClick={() => router.push('/')}>back home</button>
             <button onClick={test_firestore}>Load Firestore</button>
 
 
             {/* TEST CHARTING STUFF */}
-            <ResizableBox height={500} width={500}>
+            <ResizableBox height={750} width={750}>
                 <Chart
                     options={{
                         data,
@@ -146,6 +151,6 @@ export default function TestPage(){
             </ResizableBox>
 
 
-        </>
+        </div>
     );
 }
