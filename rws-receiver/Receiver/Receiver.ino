@@ -164,6 +164,8 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )
     // doc_path += "remote-weather-station-31653";
     // doc_path += "/databases/(default)/documents/sensor_data";
 
+    // TODO: CHECK IF A READ IS OCCURING WHILE SENDING DATA?? THE PRINTF OF FBDO.PAYLOAD() ?
+
     String documentPath = "sensor_data";
     if (Firebase.Firestore.createDocument(&fbdo, "remote-weather-station-31653", "", documentPath.c_str(), content.raw()))
       Serial.printf("ok\n%s\n\n", fbdo.payload().c_str());

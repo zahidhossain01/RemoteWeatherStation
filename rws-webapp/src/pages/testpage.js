@@ -111,7 +111,11 @@ export default function TestPage(){
             {
                 getValue: (datum) => datum.temp,
                 elementType: 'line'
-            }
+            },
+            {
+                getValue: (datum) => datum.humidity,
+                elementType: 'line'
+            },
         ],
         []
     );
