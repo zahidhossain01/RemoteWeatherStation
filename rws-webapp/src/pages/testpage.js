@@ -1,9 +1,13 @@
 import {useRouter} from 'next/router'
 import {useState, useMemo, useEffect} from 'react'
-import {Chart} from 'react-charts'
+// import {Chart} from 'react-charts'
+// https://github.com/TanStack/react-charts/issues/304
+import dynamic from 'next/dynamic';
+const Chart = dynamic(() => import("react-charts").then((mod) => mod.Chart), {ssr: false,});
+
 import { ResizableBox } from 'react-resizable';
 
-import { firestore } from './firebase';
+import { firestore } from '@/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
 export default function TestPage(){
@@ -87,7 +91,8 @@ export default function TestPage(){
                     ))
                 }
             ]
-        )
+        ),
+        [weather_data]
     );
     
 
