@@ -1,25 +1,16 @@
-import {firebase, initializeApp} from "firebase/app"
-// import "firebase/firestore"
+import { initializeApp} from "firebase/app"
 import { getFirestore } from "firebase/firestore"
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDRkE8ins1WEwifP6jsKiEGj9XIF60Id4A",
-    authDomain: "test-esp-api.firebaseapp.com",
-    databaseURL: "https://test-esp-api-default-rtdb.firebaseio.com",
-    projectId: "test-esp-api",
-    storageBucket: "test-esp-api.appspot.com",
-    messagingSenderId: "1072158518009",
-    appId: "1:1072158518009:web:fbd9c2d687a46d9519d028",
-    measurementId: "G-20NX3BL6P0"
+    apiKey: "AIzaSyDgiWf5kcxIIcW_dzMzSL8Muc2Z_ASzq18",
+    authDomain: "remote-weather-station-31653.firebaseapp.com",
+    projectId: "remote-weather-station-31653",
+    storageBucket: "remote-weather-station-31653.appspot.com",
+    messagingSenderId: "238237789817",
+    appId: "1:238237789817:web:5b4648d361126ca5912ea8"
 };
 
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
-
-// const app = initializeApp(firebaseConfig);
-// firebase.initializeApp(firebaseConfig);
-// const firestore = firebase.firestore();
-
-
 
 export { firestore }

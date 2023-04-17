@@ -21,6 +21,7 @@ export default function TestPage(){
         const sensorDataRef = collection(firestore, "sensor_data");
         const snapshot = await getDocs(sensorDataRef);
         const sensorData = snapshot.docs.map((doc) => doc.data());
+        console.log(sensorData.length + " data points received");
         return sensorData;
     }
 
@@ -34,7 +35,7 @@ export default function TestPage(){
         getWeatherDataTest().then((data) => {
             set_weather_data(data);
         });
-    });
+    }, []);
 
     // in future, consider TypeScript to more clearly label our datatypes for axes
     // https://react-charts.tanstack.com/docs/api | https://react-charts.tanstack.com/docs/getting-started
