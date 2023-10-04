@@ -1,13 +1,14 @@
-
 #include "LoRaWan_APP.h"
 #include "Arduino.h"
 
 #include <DHT_U.h>
 #include <DHT.h>
+#include <SparkFun_Weather_Meter_Kit_Arduino_Library.h>
 
 #define DHT_PIN 2
 #define DHT_TYPE DHT22
 
+#define ANEMOMETER_PIN 4
 
 #define RF_FREQUENCY                                915000000 // Hz
 
@@ -44,12 +45,16 @@ void OnTxTimeout( void );
 
 
 DHT dht(DHT_PIN, DHT_TYPE);
+SFEWeatherMeterKit meter(3, ANEMOMETER_PIN, 5); // THE 3 AND 5 ARE PLACEHOLDER
 
 void setup() {
     Serial.begin(115200);
     Mcu.begin();
 
     dht.begin();
+
+    // meter.setADCResolutionBits(8); // correct??
+    meter.begin();
 
     txNumber=0;
 
@@ -70,9 +75,11 @@ void loop()
 {
 	if(lora_idle == true)
 	{
-    delay(1000*30);
+    // delay(1000*30);
+    delay(1000*2);
     float temperature = dht.readTemperature(true);
     float humidity = dht.readHumidity();
+    float speed = meter.getWindSpeed();
     if(isnan(temperature) || isnan (humidity)){
       Serial.println("Failed to read from DHT sensor!\r\n");
       return;
@@ -80,6 +87,7 @@ void loop()
     Serial.println();
     Serial.println(temperature);
     Serial.println(humidity);
+    Serial.println(speed);
 		sprintf(txpacket,"%0.2f,%0.2f",temperature,humidity);  //start a package
    
 		Serial.printf("sending packet \"%s\" , length %d\r\n",txpacket, strlen(txpacket));
