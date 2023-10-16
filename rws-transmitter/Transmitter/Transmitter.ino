@@ -7,7 +7,7 @@
 
 #define DHT_PIN 2
 #define DHT_TYPE DHT22
-
+#define ADC_PIN 1
 #define ANEMOMETER_PIN 4
 
 #define RF_FREQUENCY                                915000000 // Hz
@@ -53,6 +53,7 @@ void setup() {
 
     dht.begin();
 
+    pinMode(ADC_PIN, INPUT);
     // meter.setADCResolutionBits(8); // correct??
     meter.begin();
 
@@ -80,6 +81,7 @@ void loop()
     float temperature = dht.readTemperature(true);
     float humidity = dht.readHumidity();
     float speed = meter.getWindSpeed();
+    int adc_val = analogRead(ADC_PIN);
     if(isnan(temperature) || isnan (humidity)){
       Serial.println("Failed to read from DHT sensor!\r\n");
       return;

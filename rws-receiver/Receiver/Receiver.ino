@@ -4,7 +4,15 @@
 
 #include "WiFi.h"
 #include <HTTPClient.h>
+
+#include "time.h"
+const char* ntpServer = "pool.ntp.org";
+const long gmtOffset_sec = -6*3600;
+const int daylightOffset_sec = 3600;
+struct tm timeinfo;
+
 #include <NTPClient.h>
+
 #include <WiFiUdp.h>
 #include <Firebase_ESP_Client.h>
 
@@ -35,8 +43,12 @@
 #define BUFFER_SIZE                                 30 // Define the payload size here
 
 // Zahid's Apartment
-#define WIFI_SSID  "ARRIS-24A9"
-#define WIFI_PASSWORD    "431010172038"
+// #define WIFI_SSID "ARRIS-24A9"
+// #define WIFI_PASSWORD "431010172038"
+
+// utexas-iot
+#define WIFI_SSID "utexas-iot"
+#define WIFI_PASSWORD "89493324389382547686"
 
 // HTTPClient http;
 // String server_base_url = "https://test-esp-api-default-rtdb.firebaseio.com/data.json";
@@ -60,7 +72,7 @@ FirebaseAuth auth;
 FirebaseConfig config;
 
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP);
+// NTPClient timeClient(ntpUDP);
 
 void setup() {
     Serial.begin(115200);
@@ -83,8 +95,13 @@ void setup() {
     factory_display.connect();
     factory_display.init();
     factory_display.displayOn();
+    
+    Serial.print("MAC: ");
+    Serial.println(WiFi.macAddress()); // F4:12:FA:43:85:4C
 
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    Serial.print("SSID: ");
+    Serial.println(WIFI_SSID);
     Serial.print("Connecting");
     while(WiFi.status() != WL_CONNECTED) {
       delay(500);
@@ -105,8 +122,8 @@ void setup() {
     Firebase.begin(&config, &auth);
     Firebase.reconnectWiFi(true);
 
-    timeClient.begin();
-
+    // timeClient.begin();
+    configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
 }
 
 
@@ -154,8 +171,13 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )
     FirebaseJson content;
 
     // NEED TO SET TIMESTAMP SOMEHOW
-    timeClient.update();
-    String time = timeClient.getFormattedTime();
+    // timeClient.update();
+    // String time = timeClient.getFormattedTime();
+    String time = "00:00:00";
+    // Serial.println(time);
+    getLocalTime(&timeinfo);
+    Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+
     content.set("fields/time/stringValue", time);
     content.set("fields/temp/doubleValue", temperature);
     content.set("fields/humidity/doubleValue", humidity);
@@ -166,10 +188,13 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )
 
     // TODO: CHECK IF A READ IS OCCURING WHILE SENDING DATA?? THE PRINTF OF FBDO.PAYLOAD() ?
 
-    String documentPath = "sensor_data";
-    if (Firebase.Firestore.createDocument(&fbdo, "remote-weather-station-31653", "", documentPath.c_str(), content.raw()))
-      Serial.printf("ok\n%s\n\n", fbdo.payload().c_str());
-    else
-      Serial.println(fbdo.errorReason());
 
+    String documentPath = "sensor_data";
+    // don't send data for now
+    // if (Firebase.Firestore.createDocument(&fbdo, "remote-weather-station-31653", "", documentPath.c_str(), content.raw())){
+    //   Serial.printf("ok\n%s\n\n", fbdo.payload().c_str());
+    // }else{
+    //   Serial.print("Firestore fail: ");
+    //   Serial.println(fbdo.errorReason());
+    // }
 }
