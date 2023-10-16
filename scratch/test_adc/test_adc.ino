@@ -8,7 +8,8 @@ int adc_sum = 0;
 
 void setup() {
   Serial.begin(115200);
-  // Mcu.begin();
+  Serial.println("Setup Begin");
+  // Mcu.begin(); // what does this do exactly... pretty sure it's needed for LoRa, but is that it?
   
   pinMode(ADC_PIN, INPUT);
 }
@@ -26,7 +27,7 @@ void loop(){
   if(count == 20){
     adc_avg = adc_sum / count;
     // Serial.printf("ADC: %d\n", adc_avg);
-    Serial.print("ADC:");
+    Serial.print("ADC avg:");
     Serial.println(adc_avg);
     adc_sum = 0;
     count = 0;
