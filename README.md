@@ -1,7 +1,7 @@
 # RemoteWeatherStation
 ## Transmitter
-transmitter transmits
+transmitter transmits stuff
 ## Receiver
-receiver receives
+receiver receives stuff
 ## Web App
 web app web apps
