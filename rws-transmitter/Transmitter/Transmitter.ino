@@ -5,10 +5,11 @@
 #include <DHT.h>
 #include <SparkFun_Weather_Meter_Kit_Arduino_Library.h>
 
-#define DHT_PIN 2
-#define DHT_TYPE DHT22
-#define ADC_PIN 1
+// #define DHT_PIN 2
+// #define DHT_TYPE DHT22
+#define WIND_DIRECTION_PIN 1
 #define ANEMOMETER_PIN 4
+#define RAINFALL_PIN 2
 
 #define RF_FREQUENCY                                915000000 // Hz
 
@@ -44,14 +45,13 @@ void OnTxDone( void );
 void OnTxTimeout( void );
 
 
-DHT dht(DHT_PIN, DHT_TYPE);
-SFEWeatherMeterKit meter(3, ANEMOMETER_PIN, 5); // THE 3 AND 5 ARE PLACEHOLDER
+SFEWeatherMeterKit meter(WIND_DIRECTION_PIN, ANEMOMETER_PIN, RAINFALL_PIN);
 
 void setup() {
     Serial.begin(115200);
     Mcu.begin();
 
-    dht.begin();
+    // dht.begin();
 
     pinMode(ADC_PIN, INPUT);
     // meter.setADCResolutionBits(8); // correct??
@@ -78,10 +78,13 @@ void loop()
 	{
     // delay(1000*30);
     delay(1000*2);
-    float temperature = dht.readTemperature(true);
-    float humidity = dht.readHumidity();
+    // float temperature = dht.readTemperature(true);
+    // float humidity = dht.readHumidity();
+    // float pressure = ;
     float speed = meter.getWindSpeed();
-    int adc_val = analogRead(ADC_PIN);
+    float direction = meter.getWindDirection();
+    
+    // int adc_val = analogRead(ADC_PIN);
     if(isnan(temperature) || isnan (humidity)){
       Serial.println("Failed to read from DHT sensor!\r\n");
       return;
