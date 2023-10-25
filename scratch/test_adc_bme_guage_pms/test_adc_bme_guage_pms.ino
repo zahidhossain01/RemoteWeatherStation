@@ -17,8 +17,7 @@
 
 #define PMS_RX 19
 #define PMS_TX 20
-// #define PMS_RX 6
-// #define PMS_TX 7
+// REMEMBER TO WIRE WIRE PMS-TX TO ESP-RX (and vice versa)
 
 // Heltec LoRa V3 videos:
 // https://www.youtube.com/watch?v=shJxD5fiEhs
@@ -61,8 +60,9 @@ void setup() {
   // TODO: wind direction calibration, set cal values
 
   Serial2.begin(9600, SERIAL_8N1, PMS_RX, PMS_TX); // PMS Sensor
-  // Serial2.begin(9600); // PMS Sensor
-  // pms.activeMode();
+  pms.activeMode();
+  Serial.println("Wait 30s for PMS warmup");
+  delay(30000);
 }
 
 
@@ -110,25 +110,25 @@ void loop(){
   Serial.print("Rainfall = ");
   Serial.println(rain);
 
-  // if (pms.read(pms_data)){
-  //   Serial.print("PM 1.0 (ug/m3): ");
-  //   Serial.println(pms_data.PM_AE_UG_1_0);
+  if (pms.read(pms_data)){
+    Serial.print("PM 1.0 (ug/m3): ");
+    Serial.println(pms_data.PM_AE_UG_1_0);
 
-  //   Serial.print("PM 2.5 (ug/m3): ");
-  //   Serial.println(pms_data.PM_AE_UG_2_5);
+    Serial.print("PM 2.5 (ug/m3): ");
+    Serial.println(pms_data.PM_AE_UG_2_5);
 
-  //   Serial.print("PM 10.0 (ug/m3): ");
-  //   Serial.println(pms_data.PM_AE_UG_10_0);
-  // } else {
-  //   Serial.println("NO PMS DATA");
-  // }
-
-  if(Serial2.available()){
-    Serial.println("Serial2 available");
-    Serial2.println("Hello World");
+    Serial.print("PM 10.0 (ug/m3): ");
+    Serial.println(pms_data.PM_AE_UG_10_0);
   } else {
-    Serial.println("Serial2 not available");
+    Serial.println("NO PMS DATA");
   }
+
+  // if(Serial2.available()){
+  //   Serial.println("Serial2 available");
+  //   Serial2.println("Hello World");
+  // } else {
+  //   Serial.println("Serial2 not available");
+  // }
 
   Serial.println();
 }
