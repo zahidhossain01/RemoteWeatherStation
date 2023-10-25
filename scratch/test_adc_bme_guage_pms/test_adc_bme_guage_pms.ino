@@ -15,10 +15,10 @@
 #define ANEMOMETER_PIN 4
 #define RAINFALL_PIN 2
 
-// #define PMS_RX 19
-// #define PMS_TX 20
-#define PMS_RX 6
-#define PMS_TX 7
+#define PMS_RX 19
+#define PMS_TX 20
+// #define PMS_RX 6
+// #define PMS_TX 7
 
 // Heltec LoRa V3 videos:
 // https://www.youtube.com/watch?v=shJxD5fiEhs
@@ -110,17 +110,24 @@ void loop(){
   Serial.print("Rainfall = ");
   Serial.println(rain);
 
-  if (pms.read(pms_data)){
-    Serial.print("PM 1.0 (ug/m3): ");
-    Serial.println(pms_data.PM_AE_UG_1_0);
+  // if (pms.read(pms_data)){
+  //   Serial.print("PM 1.0 (ug/m3): ");
+  //   Serial.println(pms_data.PM_AE_UG_1_0);
 
-    Serial.print("PM 2.5 (ug/m3): ");
-    Serial.println(pms_data.PM_AE_UG_2_5);
+  //   Serial.print("PM 2.5 (ug/m3): ");
+  //   Serial.println(pms_data.PM_AE_UG_2_5);
 
-    Serial.print("PM 10.0 (ug/m3): ");
-    Serial.println(pms_data.PM_AE_UG_10_0);
+  //   Serial.print("PM 10.0 (ug/m3): ");
+  //   Serial.println(pms_data.PM_AE_UG_10_0);
+  // } else {
+  //   Serial.println("NO PMS DATA");
+  // }
+
+  if(Serial2.available()){
+    Serial.println("Serial2 available");
+    Serial2.println("Hello World");
   } else {
-    Serial.println("NO PMS DATA");
+    Serial.println("Serial2 not available");
   }
 
   Serial.println();
