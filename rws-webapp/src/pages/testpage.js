@@ -13,29 +13,47 @@ import { collection, getDocs } from 'firebase/firestore';
 export default function TestPage(){
 
     const router = useRouter();
-    const [weather_data, set_weather_data] = useState([
-        {time: "00:00:00", temp: 0, humidity: 0}
-    ]);
-
-    const getWeatherDataTest = async () => {
+    const [weather_data, set_weather_data] = useState({
+        data: [{time: "00:00:00", temp: 0, humidity: 0}],
+        lastFetched: null
+    });
+    
+    const getWeatherDataTest = async (lastFetched) => {
         const sensorDataRef = collection(firestore, "sensor_data");
-        const snapshot = await getDocs(sensorDataRef);
+    
+        // If we have a lastFetched timestamp, query only new records
+        let query = sensorDataRef;
+        if (lastFetched) {
+            query = query.where("timestamp", ">", lastFetched); //"timestamp should be name of time in firebase"
+        }
+    
+        const snapshot = await getDocs(query);
         const sensorData = snapshot.docs.map((doc) => doc.data());
         console.log(sensorData.length + " data points received");
-        return sensorData;
+        
+        // Update the lastFetched timestamp
+        const newLastFetched = snapshot.docs.length > 0 ? snapshot.docs[snapshot.docs.length - 1].data().timestamp : null;
+    
+        return { data: sensorData, lastFetched: newLastFetched };
     }
 
     const test_firestore = async () => {
-        const weatherData = await getWeatherDataTest();
-        set_weather_data(weatherData);
-        console.log(weatherData);
+        const fetchedData = await getWeatherDataTest(weather_data.lastFetched);
+        set_weather_data(prevData => ({
+            data: [...prevData.data, ...fetchedData.data],
+            lastFetched: fetchedData.lastFetched
+        }));
     }
-
+    
     useEffect(() => {
-        getWeatherDataTest().then((data) => {
-            set_weather_data(data);
+        getWeatherDataTest(weather_data.lastFetched).then(fetchedData => {
+            set_weather_data(prevData => ({
+                data: [...prevData.data, ...fetchedData.data],
+                lastFetched: fetchedData.lastFetched
+            }));
         });
     }, []);
+
 
     // in future, consider TypeScript to more clearly label our datatypes for axes
     // https://react-charts.tanstack.com/docs/api | https://react-charts.tanstack.com/docs/getting-started
@@ -89,7 +107,7 @@ export default function TestPage(){
             [
                 {
                     label: "Temperature",
-                    data: weather_data.map((entry) => (
+                    data: weather_data.data.map((entry) => (
                         {date: entry['time'], temp: entry['temp']}
                     ))
                 },
