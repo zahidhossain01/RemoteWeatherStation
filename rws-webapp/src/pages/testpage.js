@@ -54,6 +54,28 @@ export default function TestPage(){
         });
     }, []);
 
+    //useEffect function that fetches every 10 seconds can be useful later on for updating from firestore when it is running.
+    // useEffect(() => {
+    //     // Define a function to fetch data and update state
+    //     const fetchData = async () => {
+    //         const fetchedData = await getWeatherDataTest(weather_data.lastFetched);
+    //         set_weather_data(prevData => ({
+    //             data: [...prevData.data, ...fetchedData.data],
+    //             lastFetched: fetchedData.lastFetched
+    //         }));
+    //     };
+    
+    //     // Call it immediately for the initial data fetch
+    //     fetchData();
+    
+    //     // Set up the interval to fetch data every x milliseconds (e.g., 10000 for 10 seconds)
+    //     const intervalId = setInterval(fetchData, 10000);
+    
+    //     // Cleanup the interval on component unmount
+    //     return () => clearInterval(intervalId);
+    // }, []);
+
+
 
     // in future, consider TypeScript to more clearly label our datatypes for axes
     // https://react-charts.tanstack.com/docs/api | https://react-charts.tanstack.com/docs/getting-started
