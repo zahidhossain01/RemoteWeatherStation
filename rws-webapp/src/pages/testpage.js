@@ -129,6 +129,7 @@ export default function TestPage(){
             [
                 {
                     label: "Temperature",
+                    color: "#3498db",
                     data: weather_data.data.map((entry) => (
                         {date: entry['time'], temp: entry['temp']}
                     ))
@@ -149,7 +150,11 @@ export default function TestPage(){
         () => (
             {
                 type: 'linear',
-                getValue: (datum) => datum.date
+                getValue: (datum) => datum.date,
+                formatTick: (tickValue) => {
+                    // Use a date formatting library to format the tickValue
+                    return formattedDate;
+                }
             }
         ),
         []
@@ -180,7 +185,7 @@ export default function TestPage(){
 
 
             {/* TEST CHARTING STUFF */}
-            <ResizableBox height={750} width={750}>
+            <ResizableBox style={{ background: "#f4f4f4", padding: "20px" }} height={750} width={750}>
                 <Chart
                     options={{
                         data,
@@ -189,7 +194,6 @@ export default function TestPage(){
                     }}
                 />
             </ResizableBox>
-
 
         </div>
     );
