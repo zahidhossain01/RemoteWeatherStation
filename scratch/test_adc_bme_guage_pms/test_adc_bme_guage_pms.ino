@@ -1,7 +1,9 @@
 
+
 #include "Arduino.h"
 
 #include <Wire.h>
+#include <HT_SSD1306Wire.h>
 #include <Adafruit_BME280.h>
 #include <SparkFun_Weather_Meter_Kit_Arduino_Library.h>
 #include <PMS.h>
@@ -17,7 +19,7 @@
 
 #define PMS_RX 19
 #define PMS_TX 20
-// REMEMBER TO WIRE WIRE PMS-TX TO ESP-RX (and vice versa)
+// REMEMBER TO WIRE PMS-TX TO ESP-RX (and vice versa)
 
 // Heltec LoRa V3 videos:
 // https://www.youtube.com/watch?v=shJxD5fiEhs
@@ -26,8 +28,22 @@
 
 // ESP32 uses 3.3v 12-bit ADC
 // http://community.heltec.cn/t/wifi-lora-32-v3-i2c-sda-scl/12029/4
+// ~\AppData\Local\Arduino15\packages\Heltec-esp32\hardware\esp32\0.0.7 | can find libraries here
 
-// TODO: attempt display too
+
+SSD1306Wire  factory_display(0x3c, 500000, SDA_OLED, SCL_OLED, GEOMETRY_128_64, RST_OLED);
+void VextON(void)
+{
+  pinMode(Vext,OUTPUT);
+  digitalWrite(Vext, LOW);
+}
+
+void VextOFF(void) //Vext default OFF
+{
+  pinMode(Vext,OUTPUT);
+  digitalWrite(Vext, HIGH);
+}
+
 
 TwoWire BME_Wire(1);
 Adafruit_BME280 bme; // I2C
@@ -43,6 +59,15 @@ void setup() {
   Serial.println("Setup Begin");
   // Mcu.begin(); // what does this do exactly... pretty sure it's needed for LoRa, but is that it?
   
+  VextON();
+	delay(100);
+	factory_display.init();
+	factory_display.clear();
+	factory_display.display();
+
+  factory_display.setFont(ArialMT_Plain_10);
+  factory_display.drawString(0, 0, "You can do it \\^-^/ !");
+	factory_display.display(); // need .display() after any drawString or etc operation I think
 
   BME_Wire.begin(BME_SDA, BME_SCL, 100000);
   bool bmestatus = bme.begin(0x76, &BME_Wire);  
@@ -60,17 +85,42 @@ void setup() {
   // TODO: wind direction calibration, set cal values
 
   Serial2.begin(9600, SERIAL_8N1, PMS_RX, PMS_TX); // PMS Sensor
-  pms.activeMode();
+  // TODO: try passive mode
+  // pms.activeMode();
+  pms.passiveMode();
+  pms.wakeUp();
   Serial.println("Wait 30s for PMS warmup");
   delay(30000);
+  while (Serial2.available()) { Serial2.read(); } // Clear PMS Serial2 buffer
 }
 
 
 
 void loop(){
-  delay(2000);
+  delay(5000);
 
+  pms.requestRead();
+  if (pms.readUntil(pms_data)){
+    Serial.print("PM 1.0 (ug/m3): ");
+    Serial.println(pms_data.PM_AE_UG_1_0);
 
+    Serial.print("PM 2.5 (ug/m3): ");
+    Serial.println(pms_data.PM_AE_UG_2_5);
+
+    Serial.print("PM 10.0 (ug/m3): ");
+    Serial.println(pms_data.PM_AE_UG_10_0);
+  } else {
+    Serial.println("NO PMS DATA");
+  }
+
+  // if(Serial2.available()){
+  //   Serial.println("Serial2 available");
+  //   Serial2.println("Hello World");
+  // } else {
+  //   Serial.println("Serial2 not available");
+  // }
+
+  Serial.println();
 
   // BME:
 
@@ -110,25 +160,7 @@ void loop(){
   Serial.print("Rainfall = ");
   Serial.println(rain);
 
-  if (pms.read(pms_data)){
-    Serial.print("PM 1.0 (ug/m3): ");
-    Serial.println(pms_data.PM_AE_UG_1_0);
-
-    Serial.print("PM 2.5 (ug/m3): ");
-    Serial.println(pms_data.PM_AE_UG_2_5);
-
-    Serial.print("PM 10.0 (ug/m3): ");
-    Serial.println(pms_data.PM_AE_UG_10_0);
-  } else {
-    Serial.println("NO PMS DATA");
-  }
-
-  // if(Serial2.available()){
-  //   Serial.println("Serial2 available");
-  //   Serial2.println("Hello World");
-  // } else {
-  //   Serial.println("Serial2 not available");
-  // }
+  
 
   Serial.println();
 }
