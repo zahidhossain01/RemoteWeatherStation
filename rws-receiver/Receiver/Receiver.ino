@@ -178,6 +178,8 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )
     getLocalTime(&timeinfo);
     Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
 
+    // TODO: iso-8601 time format?
+
     content.set("fields/time/stringValue", time);
     content.set("fields/temp/doubleValue", temperature);
     content.set("fields/humidity/doubleValue", humidity);
