@@ -185,6 +185,7 @@ export default function TestPage(){
 
 
             {/* TEST CHARTING STUFF */}
+            <h1>Temperature</h1>
             <ResizableBox style={{ background: "#f4f4f4", padding: "20px" }} height={750} width={750}>
                 <Chart
                     options={{
