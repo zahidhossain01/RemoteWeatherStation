@@ -5,6 +5,8 @@ import {useState, useMemo, useEffect} from 'react'
 import dynamic from 'next/dynamic';
 const Chart = dynamic(() => import("react-charts").then((mod) => mod.Chart), {ssr: false,});
 
+// https://firebase.google.com/docs/firestore/security/insecure-rules#mixed-public-and-private-access
+
 import { ResizableBox } from 'react-resizable';
 
 import { firestore } from '@/firebase';
