@@ -1,0 +1,10 @@
+Add Component: Footprint Not Found Model Name
+Added Component: Designator=P3(PCBComponent_1)
+Add Pin To Net: Unknown Pin: Pin P2-GND
+Add Pin To Net: Unknown Pin: Pin P2-RXD
+Add Pin To Net: Unknown Pin: Pin P2-TXD
+Add Pin To Net: Unknown Pin: Pin P2-VCC
+Added Pin To Net: NetName=+5 Pin=P3-5V
+Added Pin To Net: NetName=ANEM_A Pin=P3-GND
+Add Class Member: Failed to add class member : Component P2 PMS5003_breakout
+Added Member To Class: ClassName=transmitter Member=Component P3 SolarManagerPort

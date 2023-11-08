@@ -1,0 +1,9 @@
+Add Component: Footprint Not Found Model Name
+Add Pin To Net: Unknown Pin: Pin P2-GND
+Add Pin To Net: Unknown Pin: Pin P2-RXD
+Add Pin To Net: Unknown Pin: Pin P2-TXD
+Add Pin To Net: Unknown Pin: Pin P2-VCC
+Add Pin To Net: Unknown Pin: Pin P3-5V
+Add Pin To Net: Unknown Pin: Pin P3-GND
+Add Class Member: Failed to add class member : Component P2 PMS5003_breakout
+Add Class Member: Failed to add class member : Component P3 SolarManagerPort
