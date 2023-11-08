@@ -1,0 +1,27 @@
+Change Component Footprint: Designator=J1 Old Footprint=615004144121 New Footprint=615004144121
+Change Component Footprint: Designator=J2 Old Footprint=615004144121 New Footprint=615004144121
+Change Component Footprint: Designator=R1 Old Footprint=FP-MRS25-MFG New Footprint=FP-MRS25-MFG
+Change Component Footprint: Designator=R2 Old Footprint=FP-MRS25-MFG New Footprint=FP-MRS25-MFG
+Change Component Footprint: Designator=R3 Old Footprint=FP-MRS25-MFG New Footprint=FP-MRS25-MFG
+Add Component: Footprint Not Found Model Name
+Added Component: Designator=U1(PCBComponent_1)
+Add component (AddParameter): Name = "ComponentLink1Description"; Value = "Product Page"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "ComponentLink1URL"; Value = "https://heltec.org/project/wifi-lora-32-v3/"; VariantName = "[No Variations]"
+Add Pin To Net: Unknown Pin: Pin P2-GND
+Add Pin To Net: Unknown Pin: Pin P2-RXD
+Add Pin To Net: Unknown Pin: Pin P2-TXD
+Add Pin To Net: Unknown Pin: Pin P2-VCC
+Added Pin To Net: NetName=ANEM_B Pin=U1-4
+Added Pin To Net: NetName=RAIN_COUNT Pin=U1-6
+Added Pin To Net: NetName=VANE_OUT Pin=U1-7
+Added Pin To Net: NetName=3V3 Pin=U1-16
+Added Pin To Net: NetName=3V3 Pin=U1-17
+Added Pin To Net: NetName=ANEM_A Pin=U1-18
+Added Pin To Net: NetName=PMS_RX Pin=U1-19
+Added Pin To Net: NetName=PMS_TX Pin=U1-20
+Added Pin To Net: NetName=BME_SDA Pin=U1-23
+Added Pin To Net: NetName=BME_SCL Pin=U1-24
+Added Pin To Net: NetName=+5 Pin=U1-35
+Added Pin To Net: NetName=ANEM_A Pin=U1-36
+Add Class Member: Failed to add class member : Component P2 PMS5003_breakout
+Added Member To Class: ClassName=transmitter Member=Component U1 Heltech_ESP32_WiFi_LoRa_V3
