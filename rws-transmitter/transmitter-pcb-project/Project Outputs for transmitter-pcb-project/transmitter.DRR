@@ -1,0 +1,20 @@
+----------------------------------------------------------------------------------------------------------------------------------
+NCDrill File Report For: transmitter.PcbDoc   11/11/2023  3:24:26 AM
+----------------------------------------------------------------------------------------------------------------------------------
+
+Layer Pair : Top Layer to Bottom Layer
+ASCII RoundHoles File : transmitter.TXT
+
+Tool       Hole Size               Hole Tolerance               Hole Type       Hole Count   Plated         Tool Travel
+----------------------------------------------------------------------------------------------------------------------------------
+T1      28mil (0.711mm)                                           Round             8         PTH        6.55inch (166.44mm)
+T2      30mil (0.749mm)                                           Round             6         PTH        2.03inch (51.46mm)
+T3      30mil (0.762mm)                                           Round             52        PTH        14.91inch (378.60mm)
+T4      32mil (0.8mm)                                             Round             2         PTH        0.30inch (7.50mm)
+T5      35mil (0.899mm)                                           Round             8         PTH        1.39inch (35.27mm)
+T6      98mil (2.499mm)                                           Round             6         PTH        19.57inch (496.97mm)
+T7      126mil (3.2mm)                                            Round             4         NPTH       1.16inch (29.59mm)
+----------------------------------------------------------------------------------------------------------------------------------
+Totals                                                                              86
+
+Total Processing Time (hh:mm:ss) : 00:00:00

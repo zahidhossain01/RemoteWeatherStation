@@ -1,20 +1,12 @@
-Output: Gerber Files
-Type  : Gerber
-From  : Variant [[No Variations]] of Project [transmitter-pcb-project.PrjPcb]
-   Generated File[transmitter.GTO]
-   Generated File[transmitter.GTP]
-   Generated File[transmitter.GTS]
-   Generated File[transmitter.GTL]
-   Generated File[transmitter.GBL]
-   Generated File[transmitter.GBS]
-   Generated File[transmitter.GBP]
-   Generated File[transmitter.GBO]
-   Generated File[transmitter.GM]
-   Generated File[transmitter.EXTREP]
-   Generated File[transmitter.REP]
+Output: NC Drill Files
+Type  : NC Drill
+From  : Project [transmitter-pcb-project.PrjPcb]
+   Generated File[transmitter.TXT]
+   Generated File[transmitter.LDP]
+   Generated File[transmitter.DRR]
 
 
-Files Generated   : 11
+Files Generated   : 3
 Documents Printed : 0
 
-Finished Output Generation At 7:19:38 PM On 11/10/2023
+Finished Output Generation At 3:24:26 AM On 11/11/2023
