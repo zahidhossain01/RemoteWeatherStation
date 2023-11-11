@@ -1,0 +1,6 @@
+Added Component: Designator=P2(PCBComponent_1)
+Added Pin To Net: NetName=GND Pin=P2-GND
+Added Pin To Net: NetName=PMS_TX Pin=P2-RXD
+Added Pin To Net: NetName=PMS_RX Pin=P2-TXD
+Added Pin To Net: NetName=+5 Pin=P2-VCC
+Added Member To Class: ClassName=transmitter Member=Component P2 PMS5003_breakout

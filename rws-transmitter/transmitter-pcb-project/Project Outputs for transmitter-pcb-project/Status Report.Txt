@@ -1,0 +1,20 @@
+Output: Gerber Files
+Type  : Gerber
+From  : Variant [[No Variations]] of Project [transmitter-pcb-project.PrjPcb]
+   Generated File[transmitter.GTO]
+   Generated File[transmitter.GTP]
+   Generated File[transmitter.GTS]
+   Generated File[transmitter.GTL]
+   Generated File[transmitter.GBL]
+   Generated File[transmitter.GBS]
+   Generated File[transmitter.GBP]
+   Generated File[transmitter.GBO]
+   Generated File[transmitter.GM]
+   Generated File[transmitter.EXTREP]
+   Generated File[transmitter.REP]
+
+
+Files Generated   : 11
+Documents Printed : 0
+
+Finished Output Generation At 7:19:38 PM On 11/10/2023
