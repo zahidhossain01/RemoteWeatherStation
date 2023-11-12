@@ -20,13 +20,9 @@ export default function TestPage(){
         lastFetched: null
     });
     
-const getWeatherDataTest = async (lastFetched) => {
-    const sensorDataRef = collection(firestore, "sensor_data");
-    let query = sensorDataRef.orderBy("timestamp", "desc").limit(5);
-
-    const snapshot = await getDocs(query);
-    const sensorData = snapshot.docs.map((doc) => doc.data()).reverse();
-    console.log(sensorData.length + " most recent data points received");
+    const getWeatherDataTest = async (lastFetched) => {
+        const sensorDataRef = collection(firestore, "sensor_data");
+        let query = sensorDataRef.orderBy("timestamp", "desc").limit(5);
         if (lastFetched) {
             query = query.where("timestamp", ">", lastFetched); //"timestamp should be name of time in firebase"
         }
