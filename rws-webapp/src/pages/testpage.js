@@ -1,81 +1,51 @@
-import {useRouter} from 'next/router'
-import {useState, useMemo, useEffect} from 'react'
+import { useRouter } from 'next/router'
+import { useState, useMemo, useEffect } from 'react'
 // import {Chart} from 'react-charts'
 // https://github.com/TanStack/react-charts/issues/304
 import dynamic from 'next/dynamic';
-const Chart = dynamic(() => import("react-charts").then((mod) => mod.Chart), {ssr: false,});
-
-// https://firebase.google.com/docs/firestore/security/insecure-rules#mixed-public-and-private-access
+const Chart = dynamic(() => import("react-charts").then((mod) => mod.Chart), { ssr: false, });
 
 import { ResizableBox } from 'react-resizable';
 
 import { firestore } from '@/firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 
-export default function TestPage(){
+export default function TestPage() {
 
     const router = useRouter();
-    const [weather_data, set_weather_data] = useState({
-        data: [{time: "00:00:00", temp: 0, humidity: 0}],
-        lastFetched: null
-    });
-    
-    const getWeatherDataTest = async (lastFetched) => {
+    const [weather_data, set_weather_data] = useState([
+        { time: "00:00:00", temp: 0, humidity: 0 }
+    ]);
+
+    const getWeatherDataTest = async () => {
         const sensorDataRef = collection(firestore, "sensor_data");
-        let query = sensorDataRef.orderBy("timestamp", "desc").limit(5);
-        if (lastFetched) {
-            query = query.where("timestamp", ">", lastFetched); //"timestamp should be name of time in firebase"
-        }
-    
-        const snapshot = await getDocs(query);
+        const queryRef = query(sensorDataRef, orderBy("timestamp", "desc"), limit(5));
+        const snapshot = await getDocs(queryRef);
         const sensorData = snapshot.docs.map((doc) => doc.data());
-        console.log(sensorData.length + " data points received");
-        
-        // Update the lastFetched timestamp
-        const newLastFetched = snapshot.docs.length > 0 ? snapshot.docs[snapshot.docs.length - 1].data().timestamp : null;
-    
-        return { data: sensorData, lastFetched: newLastFetched };
+
+        console.log(sensorData.length + " most recent data points received");
+        return sensorData;
     }
 
     const test_firestore = async () => {
-        const fetchedData = await getWeatherDataTest(weather_data.lastFetched);
-        set_weather_data(prevData => ({
-            data: [...prevData.data, ...fetchedData.data],
-            lastFetched: fetchedData.lastFetched
-        }));
+        const weatherData = await getWeatherDataTest();
+        set_weather_data(weatherData);
+        console.log(weatherData);
     }
-    
+
     useEffect(() => {
-        getWeatherDataTest(weather_data.lastFetched).then(fetchedData => {
-            set_weather_data(prevData => ({
-                data: [...prevData.data, ...fetchedData.data],
-                lastFetched: fetchedData.lastFetched
-            }));
+        const sensorDataRef = collection(firestore, "sensor_data");
+        const queryRef = query(sensorDataRef, orderBy("timestamp", "desc"), limit(5));
+
+        // This sets up the real-time listener
+        const unsubscribe = onSnapshot(queryRef, (snapshot) => {
+            const sensorData = snapshot.docs.map(doc => doc.data());
+            set_weather_data(sensorData);
         });
+
+        // Cleanup function to unsubscribe from the listener when the component unmounts
+        return () => unsubscribe();
     }, []);
-
-    //useEffect function that fetches every 10 seconds can be useful later on for updating from firestore when it is running.
-    // useEffect(() => {
-    //     // Define a function to fetch data and update state
-    //     const fetchData = async () => {
-    //         const fetchedData = await getWeatherDataTest(weather_data.lastFetched);
-    //         set_weather_data(prevData => ({
-    //             data: [...prevData.data, ...fetchedData.data],
-    //             lastFetched: fetchedData.lastFetched
-    //         }));
-    //     };
-    
-    //     // Call it immediately for the initial data fetch
-    //     fetchData();
-    
-    //     // Set up the interval to fetch data every x milliseconds (e.g., 10000 for 10 seconds)
-    //     const intervalId = setInterval(fetchData, 10000);
-    
-    //     // Cleanup the interval on component unmount
-    //     return () => clearInterval(intervalId);
-    // }, []);
-
-
 
     // in future, consider TypeScript to more clearly label our datatypes for axes
     // https://react-charts.tanstack.com/docs/api | https://react-charts.tanstack.com/docs/getting-started
@@ -129,9 +99,8 @@ export default function TestPage(){
             [
                 {
                     label: "Temperature",
-                    color: "#3498db",
-                    data: weather_data.data.map((entry) => (
-                        {date: entry['time'], temp: entry['temp']}
+                    data: weather_data.slice().reverse().map((entry) => (
+                        { date: entry['time'], temp: entry['temp'] }
                     ))
                 },
                 // {
@@ -144,17 +113,13 @@ export default function TestPage(){
         ),
         [weather_data]
     );
-    
+
 
     const primaryAxis = useMemo(
         () => (
             {
                 type: 'linear',
-                getValue: (datum) => datum.date,
-                formatTick: (tickValue) => {
-                    // Use a date formatting library to format the tickValue
-                    return formattedDate;
-                }
+                getValue: (datum) => datum.date
             }
         ),
         []
@@ -175,18 +140,18 @@ export default function TestPage(){
         ],
         []
     );
-    
 
-    return(
+
+    return (
         <div>
-            <h1>test chart page title</h1>
+            <h1>WeatherStation</h1>
             <button onClick={() => router.push('/')}>back home</button>
             <button onClick={test_firestore}>Load Firestore</button>
 
 
             {/* TEST CHARTING STUFF */}
-            <h1>Temperature</h1>
-            <ResizableBox style={{ background: "#f4f4f4", padding: "20px" }} height={750} width={750}>
+            <h2>Temperature</h2>
+            <ResizableBox height={750} width={750}>
                 <Chart
                     options={{
                         data,
@@ -195,6 +160,7 @@ export default function TestPage(){
                     }}
                 />
             </ResizableBox>
+
 
         </div>
     );
