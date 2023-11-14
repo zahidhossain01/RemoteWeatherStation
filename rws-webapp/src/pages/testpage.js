@@ -92,7 +92,6 @@ export default function TestPage() {
     //     )
     // );
 
-    // TODO: SHOULD DEFINITELY NOT BE JUST DOING DATE(ENTRY['TIME']) LATER ON BECAUSE IT CONVERTS TO THE DAY ON WHICH YOU ACCESS
 
     // const data = useMemo(
     //     () => (
