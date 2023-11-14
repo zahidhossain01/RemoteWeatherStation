@@ -51,26 +51,26 @@ export default function TestPage() {
     // https://react-charts.tanstack.com/docs/api | https://react-charts.tanstack.com/docs/getting-started
     // primary and secondary names are just convention
 
-    // const data_series = useMemo(
-    //     () => (
-    //         [
-    //             {
-    //                 label: "Test Series Label",
-    //                 data: [
-    //                     {date: "2023-04-15T23:23:31.157966Z", temp: 75},
-    //                     {date: "2023-04-16T00:37:25.605266Z", temp: 90},
-    //                     {date: "2023-04-16T00:38:25.605266Z", temp: 90},
-    //                     {date: "2023-04-16T00:39:25.605266Z", temp: 90},
-    //                     {date: "2023-04-16T00:40:25.605266Z", temp: 90},
-    //                     {date: "2023-04-16T00:41:25.605266Z", temp: 90},
-    //                     {date: "2023-04-16T00:42:25.605266Z", temp: 90},
-    //                     {date: "2023-04-16T00:43:25.605266Z", temp: 90},
-    //                     {date: "2023-04-16T00:44:25.605266Z", temp: 90}
-    //                 ]
-    //             }
-    //         ]
-    //     )
-    // );
+    const data = useMemo(
+        () => (
+            [
+                {
+                    label: "Test Series Label",
+                    data: [
+                        {time: new Date("2023-04-15T23:23:31.157966Z"), temp: 75},
+                        {time: new Date("2023-04-16T00:37:25.605266Z"), temp: 90},
+                        {time: new Date("2023-04-16T01:38:25.605266Z"), temp: 60},
+                        {time: new Date("2023-04-16T02:39:25.605266Z"), temp: 85},
+                        {time: new Date("2023-04-16T03:40:25.605266Z"), temp: 93},
+                        {time: new Date("2023-04-16T04:41:25.605266Z"), temp: 104},
+                        {time: new Date("2023-04-16T05:42:25.605266Z"), temp: 90},
+                        {time: new Date("2023-04-16T06:43:25.605266Z"), temp: 95},
+                        {time: new Date("2023-04-16T07:44:25.605266Z"), temp: 100}
+                    ]
+                }
+            ]
+        )
+    );
 
     // const data = useMemo(
     //     () => (
@@ -78,14 +78,14 @@ export default function TestPage() {
     //             {
     //                 label: "Test Series Label",
     //                 data: [
-    //                     {date: "00:37:25", temp: 90},
-    //                     {date: "00:38:25", temp: 80},
-    //                     {date: "00:39:25", temp: 90},
-    //                     {date: "00:40:25", temp: 90},
-    //                     {date: "00:41:25", temp: 90},
-    //                     {date: "00:42:25", temp: 90},
-    //                     {date: "00:43:25", temp: 90},
-    //                     {date: "00:44:25", temp: 120}
+    //                     {time: "00:37:25", temp: 90},
+    //                     {time: "00:38:25", temp: 80},
+    //                     {time: "00:39:25", temp: 90},
+    //                     {time: "00:40:25", temp: 90},
+    //                     {time: "00:41:25", temp: 90},
+    //                     {time: "00:42:25", temp: 90},
+    //                     {time: "00:43:25", temp: 90},
+    //                     {time: "00:44:25", temp: 120}
     //                 ]
     //             }
     //         ]
@@ -94,32 +94,32 @@ export default function TestPage() {
 
     // TODO: SHOULD DEFINITELY NOT BE JUST DOING DATE(ENTRY['TIME']) LATER ON BECAUSE IT CONVERTS TO THE DAY ON WHICH YOU ACCESS
 
-    const data = useMemo(
-        () => (
-            [
-                {
-                    label: "Temperature",
-                    data: weather_data.slice().reverse().map((entry) => (
-                        { date: entry['time'], temp: entry['temp'] }
-                    ))
-                },
-                // {
-                //     label: "Humidity",
-                //     data: weather_data.map((entry) => (
-                //         {date: entry['time'], humidity: entry['humidity']}
-                //     ))
-                // }
-            ]
-        ),
-        [weather_data]
-    );
+    // const data = useMemo(
+    //     () => (
+    //         [
+    //             {
+    //                 label: "Temperature",
+    //                 data: weather_data.slice().reverse().map((entry) => (
+    //                     { time: entry['time'], temp: entry['temp'] }
+    //                 ))
+    //             },
+    //             // {
+    //             //     label: "Humidity",
+    //             //     data: weather_data.map((entry) => (
+    //             //         {time: entry['time'], humidity: entry['humidity']}
+    //             //     ))
+    //             // }
+    //         ]
+    //     ),
+    //     [weather_data]
+    // );
 
 
     const primaryAxis = useMemo(
         () => (
             {
                 type: 'linear',
-                getValue: (datum) => datum.date
+                getValue: (datum) => datum.time
             }
         ),
         []
