@@ -57,20 +57,21 @@ export default function TestPage() {
                 {
                     label: "Test Series Label",
                     data: [
-                        {time: new Date("2023-04-15T23:23:31.157966Z"), temp: 75},
-                        {time: new Date("2023-04-16T00:37:25.605266Z"), temp: 90},
                         {time: new Date("2023-04-16T01:38:25.605266Z"), temp: 60},
                         {time: new Date("2023-04-16T02:39:25.605266Z"), temp: 85},
                         {time: new Date("2023-04-16T03:40:25.605266Z"), temp: 93},
+                        {time: new Date("2023-04-16T07:44:25.605266Z"), temp: 100},
                         {time: new Date("2023-04-16T04:41:25.605266Z"), temp: 104},
+                        {time: new Date("2023-04-15T23:23:31.157966Z"), temp: 75},
+                        {time: new Date("2023-04-16T00:37:25.605266Z"), temp: 90},
                         {time: new Date("2023-04-16T05:42:25.605266Z"), temp: 90},
-                        {time: new Date("2023-04-16T06:43:25.605266Z"), temp: 95},
-                        {time: new Date("2023-04-16T07:44:25.605266Z"), temp: 100}
+                        {time: new Date("2023-04-16T06:43:25.605266Z"), temp: 95}
                     ]
                 }
             ]
         )
     );
+    // TODO: ^ above is unsorted time, how to get react-charts to sort? or just presort by date...?
 
     // const data = useMemo(
     //     () => (
