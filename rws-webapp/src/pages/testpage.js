@@ -253,7 +253,7 @@ export default function TestPage() {
                 {
                     label: "Rainfall",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: entry['time'], rainfall: entry['rainfall'] }
+                        { date: entry['time'], rainfall: entry['rain'] }
                     ))
                 }
             ]
@@ -288,7 +288,7 @@ export default function TestPage() {
                 {
                     label: "PM 1.0",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: entry['time'], pma: entry['pma'] }
+                        { date: entry['time'], pma: entry['pms_1_0'] }
                     ))
                 }
             ]
@@ -323,7 +323,7 @@ export default function TestPage() {
                 {
                     label: "PM 2.5",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: entry['time'], pmb: entry['pmb'] }
+                        { date: entry['time'], pmb: entry['pms_2_5'] }
                     ))
                 }
             ]
@@ -351,14 +351,14 @@ export default function TestPage() {
         []
     );
 
-    //PM 1.0 data and axis
+    //PM 10.0 data and axis
     const pmcData = useMemo(
         () => (
             [
                 {
                     label: "PM 10",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: entry['time'], pmc: entry['pmc'] }
+                        { date: entry['time'], pmc: entry['pms_10_0'] }
                     ))
                 }
             ]

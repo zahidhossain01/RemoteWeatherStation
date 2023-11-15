@@ -227,16 +227,29 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )
     // NEED TO SET TIMESTAMP SOMEHOW
     // timeClient.update();
     // String time = timeClient.getFormattedTime();
-    String time = "00:00:00";
+
+    // String time = "00:00:00";
     // Serial.println(time);
     getLocalTime(&timeinfo);
-    Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+    // Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S GMT-0600");
+    char time_buffer[50];
+    sprintf(time_buffer, "%A, %B %d %Y %H:%M:%S GMT-0600", &timeinfo);
+    Serial.println(time_buffer);
 
     // TODO: iso-8601 time format?
 
-    // content.set("fields/time/stringValue", time);
-    // content.set("fields/temp/doubleValue", temperature);
-    // content.set("fields/humidity/doubleValue", humidity);
+    content.set("fields/time/stringValue", time_buffer);
+
+    content.set("fields/temp/doubleValue",temp_f);
+    content.set("fields/humidity/doubleValue",humidity);
+    content.set("fields/pressure/doubleValue", pressure);
+    content.set("fields/speed/doubleValue", speed);
+    content.set("fields/direction/doubleValue", direction);
+    content.set("fields/rain/doubleValue", rain);
+    content.set("fields/pms_1_0/doubleValue", pms_1_0);
+    content.set("fields/pms_2_5/doubleValue", pms_2_5);
+    content.set("fields/pms_10_0/doubleValue", pms_10_0);
+
     // https://firestore.googleapis.com/v1/projects/remote-weather-station-31653/databases/(default)/documents/sensor_data
     // String doc_path = "projects/";
     // doc_path += "remote-weather-station-31653";
@@ -246,7 +259,6 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )
 
 
     String documentPath = "sensor_data";
-    // don't send data for now
     // if (Firebase.Firestore.createDocument(&fbdo, "remote-weather-station-31653", "", documentPath.c_str(), content.raw())){
     //   Serial.printf("ok\n%s\n\n", fbdo.payload().c_str());
     // }else{
