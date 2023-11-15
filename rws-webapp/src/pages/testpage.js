@@ -14,7 +14,7 @@ export default function TestPage() {
 
     const router = useRouter();
     const [weather_data, set_weather_data] = useState([
-        { time: "00:00:00", temp: 0, humidity: 0 }
+        { time: "00:00:00", temp: 0, humidity: 0, pressure: 0, rainfall: 0, speed: 0, pma: 0, pmb: 0, pmc: 0 }
     ]);
 
     const getWeatherDataTest = async () => {
