@@ -234,6 +234,7 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )
     // Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S GMT-0600");
     char time_buffer[50];
     sprintf(time_buffer, "%A, %B %d %Y %H:%M:%S GMT-0600", &timeinfo);
+    // Wednesday, November 15 2023 11:10:27 GMT-0600 | This format works
     Serial.println(time_buffer);
 
     // TODO: iso-8601 time format?
