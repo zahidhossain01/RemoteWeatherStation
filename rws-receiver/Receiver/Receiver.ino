@@ -17,7 +17,7 @@ struct tm timeinfo;
 #include <Firebase_ESP_Client.h>
 
 #include <Wire.h>
-#include "HT_SSD1306Wire.h"
+#include <HT_SSD1306Wire.h>
 
 
 #define RF_FREQUENCY                                915000000 // Hz
@@ -64,8 +64,18 @@ int16_t rssi,rxSize;
 
 bool lora_idle = true;
 
-SSD1306Wire  factory_display(0x3c, 500000, SDA_OLED, SCL_OLED, GEOMETRY_128_64, RST_OLED); // addr , freq , i2c group , resolution , rst
+SSD1306Wire  factory_display(0x3c, 500000, SDA_OLED, SCL_OLED, GEOMETRY_128_64, RST_OLED);
+void VextON(void)
+{
+  pinMode(Vext,OUTPUT);
+  digitalWrite(Vext, LOW);
+}
 
+void VextOFF(void) //Vext default OFF
+{
+  pinMode(Vext,OUTPUT);
+  digitalWrite(Vext, HIGH);
+}
 
 FirebaseData fbdo;
 FirebaseAuth auth;
@@ -78,6 +88,14 @@ void setup() {
     Serial.begin(115200);
     Mcu.begin();
     
+    VextON();
+    delay(100);
+    factory_display.init();
+    factory_display.setFont(ArialMT_Plain_10);
+    factory_display.clear();
+    factory_display.display();
+
+
     txNumber=0;
     rssi=0;
   
@@ -90,11 +108,6 @@ void setup() {
                                0, true, 0, 0, LORA_IQ_INVERSION_ON, true );
 
 
-
-    // OLED stuff not working rn
-    factory_display.connect();
-    factory_display.init();
-    factory_display.displayOn();
     
     Serial.print("MAC: ");
     Serial.println(WiFi.macAddress()); // F4:12:FA:43:85:4C
@@ -134,7 +147,9 @@ void loop()
   {
     lora_idle = false;
     Serial.println("into RX mode");
-    factory_display.drawString(0, 0, "into RX mode"); // not working rn
+    // factory_display.drawString(0, 0, "into RX mode"); // not working rn
+    // factory_display.display();
+
     Radio.Rx(0);
   }
   Radio.IrqProcess( );
@@ -148,17 +163,56 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )
     memcpy(rxpacket, payload, size );
     rxpacket[size]='\0';
     Radio.Sleep( );
-    Serial.printf("\r\nreceived packet \"%s\" with rssi %d , length %d\r\n",rxpacket,rssi,rxSize);
+    Serial.printf("\r\nreceived packet with rssi %d, length %d\r\n",rxpacket,rssi,rxSize);
     lora_idle = true;
 
     // String received_string = String(rxpacket);
     // Serial.println(received_string);
 
-    char* tem_s = strtok(rxpacket, ",");
-    float temperature = strtof(tem_s, NULL);
-    char* hum_s = strtok(NULL, ",");
-    float humidity = strtof(hum_s, NULL);
-    Serial.printf("Temp %0.2f F | Hum: %0.2f%\r\n", temperature, humidity);
+    float temp_f;
+    float humidity;
+    float pressure;
+    float speed;
+    float direction;
+    float rain;
+    float pms_1_0;
+    float pms_2_5;
+    float pms_10_0;
+    const int num_measures = 9;
+    float* measurements[num_measures] = {&temp_f, &humidity, &pressure, 
+                                          &speed, &direction, &rain,
+                                          &pms_1_0, &pms_2_5,
+                                          &pms_10_0};
+
+    for(int i = 0; i < num_measures; i++){
+      memcpy(measurements[i], &payload[i*sizeof(float)], sizeof(float));
+    }
+
+    Serial.println();
+    Serial.println(temp_f);
+    Serial.println(humidity);
+    Serial.println(pressure);
+    Serial.println(speed);
+    Serial.println(direction);
+    Serial.println(rain);
+    Serial.println(pms_1_0); // (ug/m3)
+    Serial.println(pms_2_5);
+    Serial.println(pms_10_0);
+
+    char temp_string[10];
+    char humidity_string[10];
+    snprintf(temp_string, sizeof(temp_string), "%f", temp_f);
+    snprintf(humidity_string, sizeof(humidity_string), "%f", humidity);
+    factory_display.clear();
+    factory_display.drawString(0, 0, temp_string);
+    factory_display.drawString(0, 10, humidity_string);
+    factory_display.display();
+
+    // char* tem_s = strtok(rxpacket, ",");
+    // float temperature = strtof(tem_s, NULL);
+    // char* hum_s = strtok(NULL, ",");
+    // float humidity = strtof(hum_s, NULL);
+    // Serial.printf("Temp %0.2f F | Hum: %0.2f%\r\n", temperature, humidity);
 
 
     // int response_code = http.POST(String(rxpacket));
@@ -180,9 +234,9 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )
 
     // TODO: iso-8601 time format?
 
-    content.set("fields/time/stringValue", time);
-    content.set("fields/temp/doubleValue", temperature);
-    content.set("fields/humidity/doubleValue", humidity);
+    // content.set("fields/time/stringValue", time);
+    // content.set("fields/temp/doubleValue", temperature);
+    // content.set("fields/humidity/doubleValue", humidity);
     // https://firestore.googleapis.com/v1/projects/remote-weather-station-31653/databases/(default)/documents/sensor_data
     // String doc_path = "projects/";
     // doc_path += "remote-weather-station-31653";

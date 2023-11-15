@@ -97,7 +97,7 @@ void setup() {
 
 
 void loop(){
-  delay(5000);
+  delay(2000);
 
   pms.requestRead();
   if (pms.readUntil(pms_data)){
