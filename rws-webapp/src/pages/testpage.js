@@ -19,7 +19,7 @@ export default function TestPage() {
 
     const getWeatherDataTest = async () => {
         const sensorDataRef = collection(firestore, "sensor_data");
-        const queryRef = query(sensorDataRef, orderBy("time", "desc"), limit(5));
+        const queryRef = query(sensorDataRef, orderBy("timestamp", "desc"), limit(5));
         const snapshot = await getDocs(queryRef);
         const sensorData = snapshot.docs.map((doc) => doc.data());
 
@@ -35,7 +35,7 @@ export default function TestPage() {
 
     useEffect(() => {
         const sensorDataRef = collection(firestore, "sensor_data");
-        const queryRef = query(sensorDataRef, orderBy("time", "desc"), limit(5));
+        const queryRef = query(sensorDataRef, orderBy("timestamp", "desc"), limit(5));
 
         // This sets up the real-time listener
         const unsubscribe = onSnapshot(queryRef, (snapshot) => {
