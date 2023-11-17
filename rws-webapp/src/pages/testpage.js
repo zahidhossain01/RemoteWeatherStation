@@ -100,13 +100,13 @@ export default function TestPage() {
                 {
                     label: "Temperature",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), temp: entry['temp'] }
+                        { date: entry['time'], temp: entry['temp'] }
                     ))
                 },
                 // {
                 //     label: "Humidity",
                 //     data: weather_data.map((entry) => (
-                //         {date: new Date(entry['time']), humidity: entry['humidity']}
+                //         {date: entry['time'], humidity: entry['humidity']}
                 //     ))
                 // }
             ]
@@ -148,7 +148,7 @@ export default function TestPage() {
                 {
                     label: "Humidity",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), humidity: entry['humidity'] }
+                        { date: entry['time'], humidity: entry['humidity'] }
                     ))
                 }
             ]
@@ -183,7 +183,7 @@ export default function TestPage() {
                 {
                     label: "Pressure",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), pressure: entry['pressure'] }
+                        { date: entry['time'], pressure: entry['pressure'] }
                     ))
                 }
             ]
@@ -218,7 +218,7 @@ export default function TestPage() {
                 {
                     label: "Wind Speed",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), speed: entry['speed'] }
+                        { date: entry['time'], speed: entry['speed'] }
                     ))
                 }
             ]
@@ -253,7 +253,7 @@ export default function TestPage() {
                 {
                     label: "Rainfall",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), rainfall: entry['rain'] }
+                        { date: entry['time'], rainfall: entry['rain'] }
                     ))
                 }
             ]
@@ -288,7 +288,7 @@ export default function TestPage() {
                 {
                     label: "PM 1.0",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), pma: entry['pms_1_0'] }
+                        { date: entry['time'], pma: entry['pms_1_0'] }
                     ))
                 }
             ]
@@ -323,7 +323,7 @@ export default function TestPage() {
                 {
                     label: "PM 2.5",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), pmb: entry['pms_2_5'] }
+                        { date: entry['time'], pmb: entry['pms_2_5'] }
                     ))
                 }
             ]
@@ -358,7 +358,7 @@ export default function TestPage() {
                 {
                     label: "PM 10",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), pmc: entry['pms_10_0'] }
+                        { date: entry['time'], pmc: entry['pms_10_0'] }
                     ))
                 }
             ]

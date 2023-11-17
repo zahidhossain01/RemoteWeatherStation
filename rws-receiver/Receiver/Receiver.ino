@@ -1,38 +1,27 @@
-
-#include "LoRaWan_APP.h"
 #include "Arduino.h"
 
+#include "LoRaWan_APP.h"
 #include "WiFi.h"
-#include <HTTPClient.h>
-
-#include "time.h"
-const char* ntpServer = "pool.ntp.org";
-const long gmtOffset_sec = -6*3600;
-const int daylightOffset_sec = 3600;
-struct tm timeinfo;
-
-#include <NTPClient.h>
-
-#include <WiFiUdp.h>
 #include <Firebase_ESP_Client.h>
-
 #include <Wire.h>
 #include <HT_SSD1306Wire.h>
+#include "time.h"
+
+const char* ntpServer = "pool.ntp.org";
+const long gmtOffset_sec = -6*3600;
+const int daylightOffset_sec = 0;
+struct tm timeinfo;
+
+
 
 
 #define RF_FREQUENCY                                915000000 // Hz
 
 #define TX_OUTPUT_POWER                             14        // dBm
 
-#define LORA_BANDWIDTH                              0         // [0: 125 kHz,
-                                                              //  1: 250 kHz,
-                                                              //  2: 500 kHz,
-                                                              //  3: Reserved]
+#define LORA_BANDWIDTH                              0         // [0: 125 kHz, 1: 250 kHz, 2: 500 kHz, 3: Reserved]
 #define LORA_SPREADING_FACTOR                       7         // [SF7..SF12]
-#define LORA_CODINGRATE                             1         // [1: 4/5,
-                                                              //  2: 4/6,
-                                                              //  3: 4/7,
-                                                              //  4: 4/8]
+#define LORA_CODINGRATE                             1         // [1: 4/5, 2: 4/6, 3: 4/7, 4: 4/8]
 #define LORA_PREAMBLE_LENGTH                        8         // Same for Tx and Rx
 #define LORA_SYMBOL_TIMEOUT                         0         // Symbols
 #define LORA_FIX_LENGTH_PAYLOAD_ON                  false
@@ -43,36 +32,28 @@ struct tm timeinfo;
 #define BUFFER_SIZE                                 30 // Define the payload size here
 
 // Zahid's Apartment
-// #define WIFI_SSID "ARRIS-24A9"
-// #define WIFI_PASSWORD "431010172038"
+#define WIFI_SSID "MensaUT"
+#define WIFI_PASSWORD "beb9141125"
 
-// utexas-iot
-#define WIFI_SSID "utexas-iot"
-#define WIFI_PASSWORD "89493324389382547686"
+// // utexas-iot
+// #define WIFI_SSID "utexas-iot"
+// #define WIFI_PASSWORD "89493324389382547686"
 
-// HTTPClient http;
-// String server_base_url = "https://test-esp-api-default-rtdb.firebaseio.com/data.json";
 
 char txpacket[BUFFER_SIZE];
 char rxpacket[BUFFER_SIZE];
-
 static RadioEvents_t RadioEvents;
-
 int16_t txNumber;
-
 int16_t rssi,rxSize;
-
 bool lora_idle = true;
 
 SSD1306Wire  factory_display(0x3c, 500000, SDA_OLED, SCL_OLED, GEOMETRY_128_64, RST_OLED);
-void VextON(void)
-{
+void VextON(void){
   pinMode(Vext,OUTPUT);
   digitalWrite(Vext, LOW);
 }
-
-void VextOFF(void) //Vext default OFF
-{
+void VextOFF(void){
+  //Vext default OFF{
   pinMode(Vext,OUTPUT);
   digitalWrite(Vext, HIGH);
 }
@@ -81,8 +62,6 @@ FirebaseData fbdo;
 FirebaseAuth auth;
 FirebaseConfig config;
 
-WiFiUDP ntpUDP;
-// NTPClient timeClient(ntpUDP);
 
 void setup() {
     Serial.begin(115200);
@@ -92,7 +71,10 @@ void setup() {
     delay(100);
     factory_display.init();
     factory_display.setFont(ArialMT_Plain_10);
+
     factory_display.clear();
+    factory_display.drawString(0, 0, "HELLO");
+    factory_display.drawString(0, 10, "CRUEL WORLD :)");
     factory_display.display();
 
 
@@ -124,9 +106,8 @@ void setup() {
     Serial.print("Connected to WiFi with IP: ");
     Serial.println(WiFi.localIP());
 
-    // http.begin(server_base_url);
 
-    // Test Cloud Firestore instead
+    // Cloud Firestore
     config.signer.test_mode = true;
     // config.api_key = key;
     // auth.user.email = email;
@@ -135,16 +116,13 @@ void setup() {
     Firebase.begin(&config, &auth);
     Firebase.reconnectWiFi(true);
 
-    // timeClient.begin();
     configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
 }
 
 
 
-void loop()
-{
-  if(lora_idle)
-  {
+void loop(){
+  if(lora_idle){
     lora_idle = false;
     Serial.println("into RX mode");
     // factory_display.drawString(0, 0, "into RX mode"); // not working rn
@@ -156,18 +134,20 @@ void loop()
 
 }
 
-void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )
-{
+void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr ){
     rssi=rssi;
     rxSize=size;
-    memcpy(rxpacket, payload, size );
-    rxpacket[size]='\0';
-    Radio.Sleep( );
-    Serial.printf("\r\nreceived packet with rssi %d, length %d\r\n",rxpacket,rssi,rxSize);
-    lora_idle = true;
 
+    // memcpy(rxpacket, payload, size ); // not actually using rxpacket for now, just payload
+    // rxpacket[size]='\0';
     // String received_string = String(rxpacket);
     // Serial.println(received_string);
+
+    Radio.Sleep( );
+    Serial.printf("\r\nreceived packet with rssi %d, length %d\r\n",rssi,rxSize);
+    lora_idle = true;
+
+    
 
     float temp_f;
     float humidity;
@@ -188,59 +168,47 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )
       memcpy(measurements[i], &payload[i*sizeof(float)], sizeof(float));
     }
 
+    // TIMESTAMP
+    // https://forum.arduino.cc/t/strftime-to-useable-variables/963093
+    // TODO: iso-8601 time format?
+    getLocalTime(&timeinfo);
+    static char timestamp[50];
+    strftime(timestamp, 50, "%F %H:%M:%S GMT%z", &timeinfo);
+    Serial.println(timestamp);
+    // Serial.println(temp_f);
+    // Serial.println(humidity);
+    // Serial.println(pressure);
+    // Serial.println(speed);
+    // Serial.println(direction);
+    // Serial.println(rain);
+    // Serial.println(pms_1_0); // (ug/m3)
+    // Serial.println(pms_2_5);
+    // Serial.println(pms_10_0);
     Serial.println();
-    Serial.println(temp_f);
-    Serial.println(humidity);
-    Serial.println(pressure);
-    Serial.println(speed);
-    Serial.println(direction);
-    Serial.println(rain);
-    Serial.println(pms_1_0); // (ug/m3)
-    Serial.println(pms_2_5);
-    Serial.println(pms_10_0);
 
     char temp_string[10];
     char humidity_string[10];
-    snprintf(temp_string, sizeof(temp_string), "%f", temp_f);
-    snprintf(humidity_string, sizeof(humidity_string), "%f", humidity);
+    snprintf(temp_string, sizeof(temp_string),         "Temperature:  %.2f [ºF]", temp_f);
+    snprintf(humidity_string, sizeof(humidity_string), "Humidity:     %.2f [%]", humidity);
+    char time_display_buf[50];
     factory_display.clear();
-    factory_display.drawString(0, 0, temp_string);
-    factory_display.drawString(0, 10, humidity_string);
+    factory_display.setFont(ArialMT_Plain_16);
+    strftime(time_display_buf, 50, "%I:%M:%S %p", &timeinfo);
+    factory_display.drawString(0, 0, time_display_buf);
+    factory_display.setFont(ArialMT_Plain_10);
+    strftime(time_display_buf, 50, "%A, %b %e %Y", &timeinfo);
+    factory_display.drawString(0, 19, time_display_buf);
+    factory_display.drawString(0, 19+13, temp_string);
+    factory_display.drawString(0, 19+13+10, humidity_string);
     factory_display.display();
 
-    // char* tem_s = strtok(rxpacket, ",");
-    // float temperature = strtof(tem_s, NULL);
-    // char* hum_s = strtok(NULL, ",");
-    // float humidity = strtof(hum_s, NULL);
-    // Serial.printf("Temp %0.2f F | Hum: %0.2f%\r\n", temperature, humidity);
 
+    
+    
 
-    // int response_code = http.POST(String(rxpacket));
-    // Serial.print("HTPP Response Code: ");
-    // Serial.println(response_code);
-
-
-    // Test Cloud Firestore instead
     if(!Firebase.ready()){return;}
     FirebaseJson content;
-
-    // NEED TO SET TIMESTAMP SOMEHOW
-    // timeClient.update();
-    // String time = timeClient.getFormattedTime();
-
-    // String time = "00:00:00";
-    // Serial.println(time);
-    getLocalTime(&timeinfo);
-    // Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S GMT-0600");
-    char time_buffer[50];
-    sprintf(time_buffer, "%A, %B %d %Y %H:%M:%S GMT-0600", &timeinfo);
-    // Wednesday, November 15 2023 11:10:27 GMT-0600 | This format works
-    Serial.println(time_buffer);
-
-    // TODO: iso-8601 time format?
-
-    content.set("fields/time/stringValue", time_buffer);
-
+    content.set("fields/time/stringValue", timestamp);
     content.set("fields/temp/doubleValue",temp_f);
     content.set("fields/humidity/doubleValue",humidity);
     content.set("fields/pressure/doubleValue", pressure);
@@ -251,19 +219,12 @@ void OnRxDone( uint8_t *payload, uint16_t size, int16_t rssi, int8_t snr )
     content.set("fields/pms_2_5/doubleValue", pms_2_5);
     content.set("fields/pms_10_0/doubleValue", pms_10_0);
 
-    // https://firestore.googleapis.com/v1/projects/remote-weather-station-31653/databases/(default)/documents/sensor_data
-    // String doc_path = "projects/";
-    // doc_path += "remote-weather-station-31653";
-    // doc_path += "/databases/(default)/documents/sensor_data";
-
-    // TODO: CHECK IF A READ IS OCCURING WHILE SENDING DATA?? THE PRINTF OF FBDO.PAYLOAD() ?
-
-
     String documentPath = "sensor_data";
-    // if (Firebase.Firestore.createDocument(&fbdo, "remote-weather-station-31653", "", documentPath.c_str(), content.raw())){
-    //   Serial.printf("ok\n%s\n\n", fbdo.payload().c_str());
-    // }else{
-    //   Serial.print("Firestore fail: ");
-    //   Serial.println(fbdo.errorReason());
-    // }
+    if (Firebase.Firestore.createDocument(&fbdo, "remote-weather-station-31653", "", documentPath.c_str(), content.raw())){
+      Serial.printf("ok\n%s\n\n", fbdo.payload().c_str());
+    }else{
+      Serial.print("Firestore fail: ");
+      Serial.println(fbdo.errorReason());
+    }
 }
+
