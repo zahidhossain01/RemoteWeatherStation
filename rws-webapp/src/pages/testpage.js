@@ -14,12 +14,12 @@ export default function TestPage() {
 
     const router = useRouter();
     const [weather_data, set_weather_data] = useState([
-        { time: "00:00:00", temp: 0, humidity: 0, pressure: 0, rain: 0, speed: 0, pm_1_0: 0, pm_2_5: 0, pm_10_0: 0 }
+        // { time: "00:00:00", temp: 0, humidity: 0, pressure: 0, rain: 0, speed: 0, pm_1_0: 0, pm_2_5: 0, pm_10_0: 0 }
     ]);
 
     const getWeatherDataTest = async () => {
         const sensorDataRef = collection(firestore, "sensor_data");
-        const queryRef = query(sensorDataRef, orderBy("timestamp", "desc"), limit(5));
+        const queryRef = query(sensorDataRef, orderBy("time"));
         const snapshot = await getDocs(queryRef);
         const sensorData = snapshot.docs.map((doc) => doc.data());
 
@@ -35,7 +35,7 @@ export default function TestPage() {
 
     useEffect(() => {
         const sensorDataRef = collection(firestore, "sensor_data");
-        const queryRef = query(sensorDataRef, orderBy("timestamp", "desc"), limit(5));
+        const queryRef = query(sensorDataRef, orderBy("time"));
 
         // This sets up the real-time listener
         const unsubscribe = onSnapshot(queryRef, (snapshot) => {
@@ -100,13 +100,13 @@ export default function TestPage() {
                 {
                     label: "Temperature",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: entry['time'], temp: entry['temp'] }
+                        { date: new Date(entry['time']), temp: entry['temp'] }
                     ))
                 },
                 // {
                 //     label: "Humidity",
                 //     data: weather_data.map((entry) => (
-                //         {date: entry['time'], humidity: entry['humidity']}
+                //         {date: new Date(entry['time']), humidity: entry['humidity']}
                 //     ))
                 // }
             ]
@@ -141,255 +141,11 @@ export default function TestPage() {
         []
     );
 
-    //Humidity data and axis
-    const humidityData = useMemo(
-        () => (
-            [
-                {
-                    label: "Humidity",
-                    data: weather_data.slice().reverse().map((entry) => (
-                        { date: entry['time'], humidity: entry['humidity'] }
-                    ))
-                }
-            ]
-        ),
-        [weather_data]
-    );
-    const humidityPrimaryAxis = useMemo(
-        () => (
-            {
-                type: 'linear',
-                getValue: (datum) => datum.date
-            }
-        ),
-        []
-    );
-    
-    const humiditySecondaryAxes = useMemo(
-        () => [
-            {
-                getValue: (datum) => datum.humidity,
-                elementType: 'line',
-                range: [0, 100] // Humidity range from 0 to 100%
-            }
-        ],
-        []
-    );
-    
-    //Pressure data and axis
-    const pressureData = useMemo(
-        () => (
-            [
-                {
-                    label: "Pressure",
-                    data: weather_data.slice().reverse().map((entry) => (
-                        { date: entry['time'], pressure: entry['pressure'] }
-                    ))
-                }
-            ]
-        ),
-        [weather_data]
-    );
-    const pressurePrimaryAxis = useMemo(
-        () => (
-            {
-                type: 'linear',
-                getValue: (datum) => datum.date
-            }
-        ),
-        []
-    );
-    
-    const pressureSecondaryAxes = useMemo(
-        () => [
-            {
-                getValue: (datum) => datum.pressure,
-                elementType: 'line',
-                range: [0, 100] // Pressure range from 0 to 100 (unit?)
-            }
-        ],
-        []
-    );
-
-    //Wind speed data and axis
-    const speedData = useMemo(
-        () => (
-            [
-                {
-                    label: "Wind Speed",
-                    data: weather_data.slice().reverse().map((entry) => (
-                        { date: entry['time'], speed: entry['speed'] }
-                    ))
-                }
-            ]
-        ),
-        [weather_data]
-    );
-    const speedPrimaryAxis = useMemo(
-        () => (
-            {
-                type: 'linear',
-                getValue: (datum) => datum.date
-            }
-        ),
-        []
-    );
-    
-    const speedSecondaryAxes = useMemo(
-        () => [
-            {
-                getValue: (datum) => datum.speed,
-                elementType: 'line',
-                range: [0, 100] // speed range from 0 to 100 (units?)
-            }
-        ],
-        []
-    );
-
-    //Rainfall data and axis
-    const rainfallData = useMemo(
-        () => (
-            [
-                {
-                    label: "Rainfall",
-                    data: weather_data.slice().reverse().map((entry) => (
-                        { date: entry['time'], rainfall: entry['rain'] }
-                    ))
-                }
-            ]
-        ),
-        [weather_data]
-    );
-    const rainfallPrimaryAxis = useMemo(
-        () => (
-            {
-                type: 'linear',
-                getValue: (datum) => datum.date
-            }
-        ),
-        []
-    );
-    
-    const rainfallSecondaryAxes = useMemo(
-        () => [
-            {
-                getValue: (datum) => datum.rainfall,
-                elementType: 'line',
-                range: [0, 100] // Rainfall range from 0 to 100 (units?)
-            }
-        ],
-        []
-    );
-
-    //PM 1.0 data and axis
-    const pmaData = useMemo(
-        () => (
-            [
-                {
-                    label: "PM 1.0",
-                    data: weather_data.slice().reverse().map((entry) => (
-                        { date: entry['time'], pma: entry['pms_1_0'] }
-                    ))
-                }
-            ]
-        ),
-        [weather_data]
-    );
-    const pmaPrimaryAxis = useMemo(
-        () => (
-            {
-                type: 'linear',
-                getValue: (datum) => datum.date
-            }
-        ),
-        []
-    );
-    
-    const pmaSecondaryAxes = useMemo(
-        () => [
-            {
-                getValue: (datum) => datum.pma,
-                elementType: 'line',
-                range: [0, 100000] // pm 1.0 range from 0 to 1000000(ug/m3)
-            }
-        ],
-        []
-    );
-
-    //PM 2.5 data and axis
-    const pmbData = useMemo(
-        () => (
-            [
-                {
-                    label: "PM 2.5",
-                    data: weather_data.slice().reverse().map((entry) => (
-                        { date: entry['time'], pmb: entry['pms_2_5'] }
-                    ))
-                }
-            ]
-        ),
-        [weather_data]
-    );
-    const pmbPrimaryAxis = useMemo(
-        () => (
-            {
-                type: 'linear',
-                getValue: (datum) => datum.date
-            }
-        ),
-        []
-    );
-    
-    const pmbSecondaryAxes = useMemo(
-        () => [
-            {
-                getValue: (datum) => datum.pmb,
-                elementType: 'line',
-                range: [0, 100000] // pm 2.5 range from 0 to 1000000(ug/m3)
-            }
-        ],
-        []
-    );
-
-    //PM 10.0 data and axis
-    const pmcData = useMemo(
-        () => (
-            [
-                {
-                    label: "PM 10",
-                    data: weather_data.slice().reverse().map((entry) => (
-                        { date: entry['time'], pmc: entry['pms_10_0'] }
-                    ))
-                }
-            ]
-        ),
-        [weather_data]
-    );
-    const pmcPrimaryAxis = useMemo(
-        () => (
-            {
-                type: 'linear',
-                getValue: (datum) => datum.date
-            }
-        ),
-        []
-    );
-    
-    const pmcSecondaryAxes = useMemo(
-        () => [
-            {
-                getValue: (datum) => datum.pmc,
-                elementType: 'line',
-                range: [0, 100000] // pm 1.0 range from 0 to 1000000(ug/m3)
-            }
-        ],
-        []
-    );
-
     return (
         <div>
             <h1>WeatherStation</h1>
             <button onClick={() => router.push('/')}>back home</button>
+            <button onClick={() => router.push('/larry_testpage')}>larry testpage</button>
             <button onClick={test_firestore}>Load Firestore</button>
     
             {/* Flex container for charts */}
@@ -407,114 +163,8 @@ export default function TestPage() {
                         />
                     </ResizableBox>
                 </div>
-    
-                {/* Humidity Chart */}
-                <div>
-                    <h2>Humidity</h2>
-                    <ResizableBox height={750} width={750}>
-                        <Chart
-                            options={{
-                                data: humidityData,
-                                primaryAxis: humidityPrimaryAxis,
-                                secondaryAxes: humiditySecondaryAxes
-                            }}
-                        />
-                    </ResizableBox>
-                </div>
             </div>
 
-            {/* Flex container for charts */}
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px' }}>
-                {/* Pressure Chart */}
-                <div>
-                    <h2>Pressure</h2>
-                    <ResizableBox height={750} width={750}>
-                        <Chart
-                            options={{
-                                data: pressureData, 
-                                primaryAxis: pressurePrimaryAxis, 
-                                secondaryAxes: pressureSecondaryAxes
-                            }}
-                        />
-                    </ResizableBox>
-                </div>
-    
-                {/* Wind Speed Chart */}
-                <div>
-                    <h2>Wind Speed</h2>
-                    <ResizableBox height={750} width={750}>
-                        <Chart
-                            options={{
-                                data: speedData,
-                                primaryAxis: speedPrimaryAxis,
-                                secondaryAxes: speedSecondaryAxes
-                            }}
-                        />
-                    </ResizableBox>
-                </div>
-            </div>
-
-            {/* Flex container for charts */}
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px' }}>
-                {/* Rainfall Chart */}
-                <div>
-                    <h2>Rainfall</h2>
-                    <ResizableBox height={750} width={750}>
-                        <Chart
-                            options={{
-                                data: rainfallData, 
-                                primaryAxis: rainfallPrimaryAxis, 
-                                secondaryAxes: rainfallSecondaryAxes
-                            }}
-                        />
-                    </ResizableBox>
-                </div>
-    
-                {/* PM 1.0 Chart */}
-                <div>
-                    <h2>PM 1.0</h2>
-                    <ResizableBox height={750} width={750}>
-                        <Chart
-                            options={{
-                                data: pmaData,
-                                primaryAxis: pmaPrimaryAxis,
-                                secondaryAxes: pmaSecondaryAxes
-                            }}
-                        />
-                    </ResizableBox>
-                </div>
-            </div>
-
-            {/* Flex container for charts */}
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px' }}>
-                {/* PM 2.5 Chart */}
-                <div>
-                    <h2>PM 2.5</h2>
-                    <ResizableBox height={750} width={750}>
-                        <Chart
-                            options={{
-                                data: pmbData, 
-                                primaryAxis: pmbPrimaryAxis, 
-                                secondaryAxes: pmbSecondaryAxes
-                            }}
-                        />
-                    </ResizableBox>
-                </div>
-    
-                {/* PM 10.0 Chart */}
-                <div>
-                    <h2>PM 10.0</h2>
-                    <ResizableBox height={750} width={750}>
-                        <Chart
-                            options={{
-                                data: pmcData,
-                                primaryAxis: pmcPrimaryAxis,
-                                secondaryAxes: pmcSecondaryAxes
-                            }}
-                        />
-                    </ResizableBox>
-                </div>
-            </div>
         </div>
     );
 }
