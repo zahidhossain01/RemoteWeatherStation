@@ -14,16 +14,14 @@ export default function TestPage() {
 
     const router = useRouter();
     const [weather_data, set_weather_data] = useState([
-        // { time: "00:00:00", temp: 0, humidity: 0, pressure: 0, rain: 0, speed: 0, pm_1_0: 0, pm_2_5: 0, pm_10_0: 0 }
+        {time: "00:00:00", temp: 0, humidity: 0}
     ]);
 
     const getWeatherDataTest = async () => {
         const sensorDataRef = collection(firestore, "sensor_data");
-        const queryRef = query(sensorDataRef, orderBy("time"));
-        const snapshot = await getDocs(queryRef);
+        const snapshot = await getDocs(sensorDataRef);
         const sensorData = snapshot.docs.map((doc) => doc.data());
-
-        console.log(sensorData.length + " most recent data points received");
+        console.log(sensorData.length + " data points received");
         return sensorData;
     }
 
@@ -34,17 +32,9 @@ export default function TestPage() {
     }
 
     useEffect(() => {
-        const sensorDataRef = collection(firestore, "sensor_data");
-        const queryRef = query(sensorDataRef, orderBy("time"));
-
-        // This sets up the real-time listener
-        const unsubscribe = onSnapshot(queryRef, (snapshot) => {
-            const sensorData = snapshot.docs.map(doc => doc.data());
-            set_weather_data(sensorData);
+        getWeatherDataTest().then((data) => {
+            set_weather_data(data);
         });
-
-        // Cleanup function to unsubscribe from the listener when the component unmounts
-        return () => unsubscribe();
     }, []);
 
     // in future, consider TypeScript to more clearly label our datatypes for axes
@@ -94,28 +84,28 @@ export default function TestPage() {
     // );
 
 
-    const temperatureData = useMemo(
+    const data = useMemo(
         () => (
             [
                 {
                     label: "Temperature",
-                    data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), temp: entry['temp'] }
+                    data: weather_data.map((entry) => (
+                        {date: entry['time'], temp: entry['temp']}
                     ))
                 },
                 // {
                 //     label: "Humidity",
                 //     data: weather_data.map((entry) => (
-                //         {date: new Date(entry['time']), humidity: entry['humidity']}
+                //         {date: entry['time'], humidity: entry['humidity']}
                 //     ))
                 // }
             ]
         ),
         [weather_data]
     );
+    
 
-
-    const temperaturePrimaryAxis = useMemo(
+    const primaryAxis = useMemo(
         () => (
             {
                 type: 'linear',
@@ -125,7 +115,7 @@ export default function TestPage() {
         []
     );
 
-    const temperatureSecondaryAxes = useMemo(
+    const secondaryAxes = useMemo(
         () => [
             {
                 getValue: (datum) => datum.temp,
@@ -140,30 +130,26 @@ export default function TestPage() {
         ],
         []
     );
-
-    return (
-        <div>
-            <h1>WeatherStation</h1>
-            <button onClick={() => router.push('/')}>back home</button>
-            <button onClick={() => router.push('/larry_testpage')}>larry testpage</button>
-            <button onClick={test_firestore}>Load Firestore</button>
     
-            {/* Flex container for charts */}
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px' }}>
-                {/* Temperature Chart */}
-                <div>
-                    <h2>Temperature</h2>
-                    <ResizableBox height={750} width={750}>
-                        <Chart
-                            options={{
-                                data: temperatureData, 
-                                primaryAxis: temperaturePrimaryAxis, 
-                                secondaryAxes: temperatureSecondaryAxes
-                            }}
-                        />
-                    </ResizableBox>
-                </div>
-            </div>
+
+    return(
+        <div>
+            <h1>test chart page title</h1>
+            <button onClick={() => router.push('/')}>back home</button>
+            <button onClick={test_firestore}>Load Firestore</button>
+
+
+            {/* TEST CHARTING STUFF */}
+            <ResizableBox height={750} width={750}>
+                <Chart
+                    options={{
+                        data,
+                        primaryAxis,
+                        secondaryAxes
+                    }}
+                />
+            </ResizableBox>
+
 
         </div>
     );
