@@ -3,6 +3,7 @@ import { useState, useMemo, useEffect } from 'react'
 // import {Chart} from 'react-charts'
 // https://github.com/TanStack/react-charts/issues/304
 import dynamic from 'next/dynamic';
+import Compass from './Compass';
 const Chart = dynamic(() => import("react-charts").then((mod) => mod.Chart), { ssr: false, });
 
 import { ResizableBox } from 'react-resizable';
@@ -16,6 +17,7 @@ export default function TestPage() {
     const [weather_data, set_weather_data] = useState([
         { time: "00:00:00", temp: 0, humidity: 0, pressure: 0, rain: 0, speed: 0, pms_10_0: 0, pms_1_0: 0, pms_2_5: 0 }
     ]);
+    const [windDirection, setWindDirection] = useState(0);
 
     const getWeatherDataTest = async () => {
         const sensorDataRef = collection(firestore, "sensor_data");
@@ -36,16 +38,24 @@ export default function TestPage() {
     useEffect(() => {
         const sensorDataRef = collection(firestore, "sensor_data");
         const queryRef = query(sensorDataRef, orderBy("time", "desc"), limit(5));
-
+    
         // This sets up the real-time listener
         const unsubscribe = onSnapshot(queryRef, (snapshot) => {
             const sensorData = snapshot.docs.map(doc => doc.data());
             set_weather_data(sensorData);
+    
+            // Assuming 'direction' is the field name in your data for wind direction
+            // Check if there's at least one data point
+            if (sensorData.length > 0) {
+                const latestDirection = sensorData[0].direction;
+                setWindDirection(latestDirection);
+            }
         });
-
+    
         // Cleanup function to unsubscribe from the listener when the component unmounts
         return () => unsubscribe();
     }, []);
+    
 
     // in future, consider TypeScript to more clearly label our datatypes for axes
     // https://react-charts.tanstack.com/docs/api | https://react-charts.tanstack.com/docs/getting-started
@@ -517,6 +527,7 @@ export default function TestPage() {
                     </ResizableBox>
                 </div>
             </div>
+            <Compass direction={windDirection} />
         </div>
     );
 }
