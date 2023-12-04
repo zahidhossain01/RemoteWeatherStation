@@ -20,9 +20,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <h1>Test Header</h1>
-      <button onClick={() => router.push('/testpage')}>testpage</button>
-
+      <h1>Remote Weather Station Home</h1>
+      <button onClick={() => router.push('/testpage')}>Monitoring</button>
+      <button onClick={() => router.push('/history')}>Historical Data</button>
+      <button onClick={() => router.push('/prediction')}>Allergen Prediction</button>
 
     </>
   )
