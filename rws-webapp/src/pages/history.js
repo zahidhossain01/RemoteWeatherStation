@@ -11,6 +11,7 @@ export default function WeatherChartPage() {
     const [weatherData, setWeatherData] = useState([])
     const [timeRange, setTimeRange] = useState({ start: '', end: '' })
     const isTimeRangeSelected = timeRange.start && timeRange.end;
+    const [selectedDataType, setSelectedDataType] = useState('temp'); // New state for selected data type
 
     const fetchWeatherData = async () => {
         if (!timeRange.start || !timeRange.end) {
@@ -47,17 +48,15 @@ export default function WeatherChartPage() {
     
 
     const data = useMemo(
-        () => (
-            [
-                {
-                    label: "Temperature",
-                    data: weatherData.slice().reverse().map((entry) => (
-                        { date: entry['time'], temp: entry['temp'] }
-                    ))
-                },
-            ]
-        ),
-        [weatherData]
+        () => [
+            {
+                label: selectedDataType.charAt(0).toUpperCase() + selectedDataType.slice(1), // Dynamic label based on selected data type
+                data: weatherData.slice().reverse().map((entry) => (
+                    { date: entry['time'], value: entry[selectedDataType] } // Use selected data type for data
+                ))
+            }
+        ],
+        [weatherData, selectedDataType]
     );
 
     // Test Data
@@ -81,17 +80,12 @@ export default function WeatherChartPage() {
     const secondaryAxes = useMemo(
         () => [
             {
-                getValue: (datum) => datum.temp,
+                getValue: (datum) => datum.value,
                 elementType: 'line',
-                range: [0, 200]
-            },
-            // {
-            //     getValue: (datum) => datum.humidity,
-            //     elementType: 'bar',
-            //     range: [0, 100]
-            // }
+                // Adjust range based on selectedDataType if necessary
+            }
         ],
-        []
+        [selectedDataType]
     );
 
     return (
@@ -103,11 +97,25 @@ export default function WeatherChartPage() {
                 <input type="datetime-local" value={timeRange.start} onChange={(e) => setTimeRange({ ...timeRange, start: e.target.value })} />
                 <input type="datetime-local" value={timeRange.end} onChange={(e) => setTimeRange({ ...timeRange, end: e.target.value })} />
                 <button onClick={fetchWeatherData} disabled={!isTimeRangeSelected}>Load Data</button>
+                {/* Dropdown to select data type */}
+                <select value={selectedDataType} onChange={(e) => setSelectedDataType(e.target.value)}>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+                    <option value="pressure">Pressure</option>
+                    <option value="rain">Rain</option>
+                    <option value="speed">Speed</option>
+                    <option value="pms_10_0">PMS 10.0</option>
+                    <option value="pms_1_0">PMS 1.0</option>
+                    <option value="pms_2_5">PMS 2.5</option>
+                </select>
+
+                <button onClick={fetchWeatherData} disabled={!isTimeRangeSelected}>Load Data</button>
             </div>
 
+            {/* Chart rendering */}
             {isTimeRangeSelected && weatherData.length > 0 && (
                 <div>
-                    <h2>Temperature Chart</h2>
+                    <h2>{`${selectedDataType.charAt(0).toUpperCase() + selectedDataType.slice(1)} Chart`}</h2>
                     <div style={{ height: '500px', width: '100%' }}>
                         <Chart
                             options={{
