@@ -21,7 +21,7 @@ export default function Home() {
       </Head>
 
       <h1>Remote Weather Station Home</h1>
-      <button onClick={() => router.push('/testpage')}>Monitoring</button>
+      <button onClick={() => router.push('/larry_testpage')}>Monitoring</button>
       <button onClick={() => router.push('/history')}>Historical Data</button>
       <button onClick={() => router.push('/prediction')}>Allergen Prediction</button>
 
