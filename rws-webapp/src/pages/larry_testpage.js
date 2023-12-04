@@ -14,7 +14,7 @@ export default function TestPage() {
 
     const router = useRouter();
     const [weather_data, set_weather_data] = useState([
-        // { time: "00:00:00", temp: 0, humidity: 0, pressure: 0, rain: 0, speed: 0, pm_1_0: 0, pm_2_5: 0, pm_10_0: 0 }
+        { time: "00:00:00", temp: 0, humidity: 0, pressure: 0, rain: 0, speed: 0, pms_10_0: 0, pms_1_0: 0, pms_2_5: 0 }
     ]);
 
     const getWeatherDataTest = async () => {
@@ -51,48 +51,48 @@ export default function TestPage() {
     // https://react-charts.tanstack.com/docs/api | https://react-charts.tanstack.com/docs/getting-started
     // primary and secondary names are just convention
 
-    // const data = useMemo(
+    // const data_series = useMemo(
     //     () => (
     //         [
     //             {
     //                 label: "Test Series Label",
     //                 data: [
-    //                     {time: new Date("2023-04-16T01:38:25.605266Z"), temp: 60},
-    //                     {time: new Date("2023-04-16T02:39:25.605266Z"), temp: 85},
-    //                     {time: new Date("2023-04-16T03:40:25.605266Z"), temp: 93},
-    //                     {time: new Date("2023-04-16T07:44:25.605266Z"), temp: 100},
-    //                     {time: new Date("2023-04-16T04:41:25.605266Z"), temp: 104},
-    //                     {time: new Date("2023-04-15T23:23:31.157966Z"), temp: 75},
-    //                     {time: new Date("2023-04-16T00:37:25.605266Z"), temp: 90},
-    //                     {time: new Date("2023-04-16T05:42:25.605266Z"), temp: 90},
-    //                     {time: new Date("2023-04-16T06:43:25.605266Z"), temp: 95}
-    //                 ]
-    //             }
-    //         ]
-    //     )
-    // );
-    // TODO: ^ above is unsorted time, how to get react-charts to sort? or just presort by date...?
-
-    // const data = useMemo(
-    //     () => (
-    //         [
-    //             {
-    //                 label: "Test Series Label",
-    //                 data: [
-    //                     {time: "00:37:25", temp: 90},
-    //                     {time: "00:38:25", temp: 80},
-    //                     {time: "00:39:25", temp: 90},
-    //                     {time: "00:40:25", temp: 90},
-    //                     {time: "00:41:25", temp: 90},
-    //                     {time: "00:42:25", temp: 90},
-    //                     {time: "00:43:25", temp: 90},
-    //                     {time: "00:44:25", temp: 120}
+    //                     {date: "2023-04-15T23:23:31.157966Z", temp: 75},
+    //                     {date: "2023-04-16T00:37:25.605266Z", temp: 90},
+    //                     {date: "2023-04-16T00:38:25.605266Z", temp: 90},
+    //                     {date: "2023-04-16T00:39:25.605266Z", temp: 90},
+    //                     {date: "2023-04-16T00:40:25.605266Z", temp: 90},
+    //                     {date: "2023-04-16T00:41:25.605266Z", temp: 90},
+    //                     {date: "2023-04-16T00:42:25.605266Z", temp: 90},
+    //                     {date: "2023-04-16T00:43:25.605266Z", temp: 90},
+    //                     {date: "2023-04-16T00:44:25.605266Z", temp: 90}
     //                 ]
     //             }
     //         ]
     //     )
     // );
 
+    // const data = useMemo(
+    //     () => (
+    //         [
+    //             {
+    //                 label: "Test Series Label",
+    //                 data: [
+    //                     {date: "00:37:25", temp: 90},
+    //                     {date: "00:38:25", temp: 80},
+    //                     {date: "00:39:25", temp: 90},
+    //                     {date: "00:40:25", temp: 90},
+    //                     {date: "00:41:25", temp: 90},
+    //                     {date: "00:42:25", temp: 90},
+    //                     {date: "00:43:25", temp: 90},
+    //                     {date: "00:44:25", temp: 120}
+    //                 ]
+    //             }
+    //         ]
+    //     )
+    // );
+
+    // TODO: SHOULD DEFINITELY NOT BE JUST DOING DATE(ENTRY['TIME']) LATER ON BECAUSE IT CONVERTS TO THE DAY ON WHICH YOU ACCESS
 
     const temperatureData = useMemo(
         () => (
@@ -100,13 +100,13 @@ export default function TestPage() {
                 {
                     label: "Temperature",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), temp: entry['temp'] }
+                        { date: entry['time'], temp: entry['temp'] }
                     ))
                 },
                 // {
                 //     label: "Humidity",
                 //     data: weather_data.map((entry) => (
-                //         {date: new Date(entry['time']), humidity: entry['humidity']}
+                //         {date: entry['time'], humidity: entry['humidity']}
                 //     ))
                 // }
             ]
@@ -148,7 +148,7 @@ export default function TestPage() {
                 {
                     label: "Humidity",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), humidity: entry['humidity'] }
+                        { date: entry['time'], humidity: entry['humidity'] }
                     ))
                 }
             ]
@@ -168,6 +168,7 @@ export default function TestPage() {
     const humiditySecondaryAxes = useMemo(
         () => [
             {
+                type: 'linear',
                 getValue: (datum) => datum.humidity,
                 elementType: 'line',
                 range: [0, 100] // Humidity range from 0 to 100%
@@ -183,7 +184,7 @@ export default function TestPage() {
                 {
                     label: "Pressure",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), pressure: entry['pressure'] }
+                        { date: entry['time'], pressure: entry['pressure'] }
                     ))
                 }
             ]
@@ -203,9 +204,10 @@ export default function TestPage() {
     const pressureSecondaryAxes = useMemo(
         () => [
             {
+                type: 'linear',
                 getValue: (datum) => datum.pressure,
                 elementType: 'line',
-                range: [0, 100] // Pressure range from 0 to 100 (unit?)
+                range: [0, 1000] // Pressure range from 0 to 100 (unit?)
             }
         ],
         []
@@ -218,7 +220,7 @@ export default function TestPage() {
                 {
                     label: "Wind Speed",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), speed: entry['speed'] }
+                        { date: entry['time'], speed: entry['speed'] }
                     ))
                 }
             ]
@@ -253,7 +255,7 @@ export default function TestPage() {
                 {
                     label: "Rainfall",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), rainfall: entry['rain'] }
+                        { date: entry['time'], rainfall: entry['rain'] }
                     ))
                 }
             ]
@@ -288,7 +290,7 @@ export default function TestPage() {
                 {
                     label: "PM 1.0",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), pma: entry['pms_1_0'] }
+                        { date: entry['time'], pma: entry['pms_1_0'] }
                     ))
                 }
             ]
@@ -323,7 +325,7 @@ export default function TestPage() {
                 {
                     label: "PM 2.5",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), pmb: entry['pms_2_5'] }
+                        { date: entry['time'], pmb: entry['pms_2_5'] }
                     ))
                 }
             ]
@@ -351,14 +353,14 @@ export default function TestPage() {
         []
     );
 
-    //PM 10.0 data and axis
+    //PM 1.0 data and axis
     const pmcData = useMemo(
         () => (
             [
                 {
                     label: "PM 10",
                     data: weather_data.slice().reverse().map((entry) => (
-                        { date: new Date(entry['time']), pmc: entry['pms_10_0'] }
+                        { date: entry['time'], pmc: entry['pms_10_0'] }
                     ))
                 }
             ]
