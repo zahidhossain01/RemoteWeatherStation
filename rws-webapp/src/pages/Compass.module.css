@@ -1,0 +1,41 @@
+.compass {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.degree {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.face {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border: 5px solid #000;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.label {
+    position: absolute;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.label:nth-child(1) { top: 10px; left: 50%; transform: translateX(-50%); }
+.label:nth-child(2) { right: 10px; top: 50%; transform: translateY(-50%); }
+.label:nth-child(3) { bottom: 10px; left: 50%; transform: translateX(-50%); }
+.label:nth-child(4) { left: 10px; top: 50%; transform: translateY(-50%); }
+
+.needle {
+    position: absolute;
+    bottom: 50%;
+    width: 4px;
+    height: 50%;
+    background-color: red;
+    transform-origin: 50% 100%;
+}
