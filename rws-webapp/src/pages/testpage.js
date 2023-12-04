@@ -90,8 +90,9 @@ export default function TestPage() {
                 {
                     label: "Temperature",
                     data: weather_data.map((entry) => (
-                        {date: entry['time'], temp: entry['temp']}
+                        {date: new Date(entry['time']), temp: entry['temp']}
                     ))
+                    // TODO: SORT
                 },
                 // {
                 //     label: "Humidity",
