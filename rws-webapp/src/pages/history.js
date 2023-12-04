@@ -17,30 +17,34 @@ export default function WeatherChartPage() {
             console.log("Please select both start and end times.");
             return;
         }
+        
+        // Parse the time range to Date objects
+        const startDate = new Date(timeRange.start);
+        const endDate = new Date(timeRange.end);
+        
         const sensorDataRef = collection(firestore, "sensor_data");
-        const queryRef = query(sensorDataRef, where("timestamp", ">=", new Date(timeRange.start)), where("timestamp", "<=", new Date(timeRange.end)));
+        // Create a query with the time range
+        const queryRef = query(sensorDataRef, 
+            where("time", ">=", startDate.toISOString()), 
+            where("time", "<=", endDate.toISOString())
+        );
         const snapshot = await getDocs(queryRef);
         const sensorData = snapshot.docs.map(doc => {
             const data = doc.data();
-            console.log("Raw data from Firestore:", data);
-    
-            const date = data.timestamp.toDate(); // Convert to JavaScript Date object
-            console.log("Converted Date:", date);
-    
+            
+            // Parse the Firestore time string to a Date object
+            // Adjust the parsing to match the format of the time string from Firestore
+            const time = new Date(data.time);
+            
             return {
                 ...data,
-                timestamp: date // Replace with the converted Date
+                time: time // Use the parsed Date object
             };
         });
     
         setWeatherData(sensorData);
-
-        // Debugging: Log the formatted data
-        console.log("Formatted Data:", weatherData.map(entry => ({
-            date: new Date(entry.timestamp),
-            temp: entry.temp
-        })));
-    }
+    };
+    
 
     const data = useMemo(
         () => (
