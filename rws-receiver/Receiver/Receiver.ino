@@ -31,13 +31,17 @@ struct tm timeinfo;
 #define RX_TIMEOUT_VALUE                            1000
 #define BUFFER_SIZE                                 30 // Define the payload size here
 
-// Zahid's Apartment
-#define WIFI_SSID "MensaUT"
-#define WIFI_PASSWORD "beb9141125"
+// #define WIFI_SSID "MensaUT"
+// #define WIFI_PASSWORD "beb9141125"
 
-// // utexas-iot
 // #define WIFI_SSID "utexas-iot"
 // #define WIFI_PASSWORD "89493324389382547686"
+
+// #define WIFI_SSID "ZPixel"
+// #define WIFI_PASSWORD "zinternet01"
+
+#define WIFI_SSID "asushotspot"
+#define WIFI_PASSWORD "macsucks"
 
 
 char txpacket[BUFFER_SIZE];
